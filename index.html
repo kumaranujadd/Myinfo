@@ -7,6 +7,35 @@
 <title>Anuj | Dev Portfolio</title>
 
 <style>
+   .floating-social {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.float-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #0088cc; /* Telegram color */
+  text-decoration: none;
+}
+
+.float-btn i {
+  font-size: 22px;
+  color: white;
+}
+
+/* X button */
+.float-btn.x {
+  background: black;
+}
 body{
 margin:0;
 font-family:Arial,sans-serif;
