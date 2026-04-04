@@ -312,11 +312,11 @@ Bhai JEE ne lanka laga diya hai 🙂‍↕️🙂‍↕️
 
 
 <script>
- // FIX LOADER
-window.addEventListener("load",()=>{
-  setTimeout(()=>{
+// FIX LOADER
+window.addEventListener("load", () => {
+  setTimeout(() => {
     document.getElementById("loader").classList.add("hide-loader");
-  },1000);
+  }, 1000);
 });
 
 fetch("https://opensheet.elk.sh/1A1In9joYUNj8kTljvEZ7DyZcGt7RsBsiMUcPi_LEbLA/Sheet1")
@@ -333,44 +333,54 @@ fetch("https://opensheet.elk.sh/1A1In9joYUNj8kTljvEZ7DyZcGt7RsBsiMUcPi_LEbLA/She
 
     const grouped = {};
 
+    // 🔥 LOOP THROUGH SHEET
     data.forEach(row => {
-     const tasks = [
-  { task: row.T1, status: row.S1 },
-  { task: row.T2, status: row.S2 },
-  { task: row.T3, status: row.S3 },
-  { task: row.T4, status: row.S4 },
-  { task: row.T5, status: row.S5 },
-  { task: row.T6, status: row.S6 },
-  { task: row.T7, status: row.S7 }
-];
 
-  tasks.forEach(item => {
-  if (!item.task) return;
+      const tasks = [
+        { task: row.T1, status: row.S1 },
+        { task: row.T2, status: row.S2 },
+        { task: row.T3, status: row.S3 },
+        { task: row.T4, status: row.S4 },
+        { task: row.T5, status: row.S5 },
+        { task: row.T6, status: row.S6 },
+        { task: row.T7, status: row.S7 }
+      ];
 
-  const isDone = item.status === "Done";
+      tasks.forEach(item => {
+        if (!item.task) return;
 
-  if (row.Date === todayDate) {
-    const div = document.createElement("div");
-    div.className = "card";
+        const isDone = item.status === "Done";
 
-    div.innerHTML = `
-      <span style="${isDone ? 'text-decoration: line-through; opacity:0.6;' : ''}">
-        <input type="checkbox" ${isDone ? 'checked' : ''}>
-        ${item.task}
-      </span>
-    `;
+        // ✅ TODAY TARGET
+        if (row.Date === todayDate) {
 
-    todayDiv.appendChild(div);
+          const div = document.createElement("div");
+          div.className = "card";
 
-  } else if (row.Date > todayDate) {
+          div.innerHTML = `
+            <span style="${isDone ? 'text-decoration: line-through; opacity:0.6;' : ''}">
+              <input type="checkbox" ${isDone ? 'checked' : ''}>
+              ${item.task}
+            </span>
+          `;
 
-    if (!grouped[row.Date]) {
-      grouped[row.Date] = [];
-    }
+          todayDiv.appendChild(div);
 
-    grouped[row.Date].push(item);
-  }
-});
+        } 
+        // ✅ UPCOMING TARGET
+        else if (row.Date > todayDate) {
+
+          if (!grouped[row.Date]) {
+            grouped[row.Date] = [];
+          }
+
+          grouped[row.Date].push(item);
+        }
+      });
+
+    });
+
+    // 🔥 CREATE UPCOMING DATE CARDS (IMPORTANT: OUTSIDE LOOP)
     Object.keys(grouped).forEach(date => {
 
       const card = document.createElement("div");
@@ -382,16 +392,17 @@ fetch("https://opensheet.elk.sh/1A1In9joYUNj8kTljvEZ7DyZcGt7RsBsiMUcPi_LEbLA/She
       });
 
       let targetsHTML = "";
-     grouped[date].forEach(item => {
-  const isDone = item.status === "Done";
 
-  targetsHTML += `
-    <div style="${isDone ? 'text-decoration: line-through; opacity:0.6;' : ''}">
-      <input type="checkbox" ${isDone ? 'checked' : ''}>
-      ${item.task}
-    </div>
-  `;
-});
+      grouped[date].forEach(item => {
+        const isDone = item.status === "Done";
+
+        targetsHTML += `
+          <div style="${isDone ? 'text-decoration: line-through; opacity:0.6;' : ''}">
+            <input type="checkbox" ${isDone ? 'checked' : ''}>
+            ${item.task}
+          </div>
+        `;
+      });
 
       card.innerHTML = `
         <h3>${formattedDate}</h3>
