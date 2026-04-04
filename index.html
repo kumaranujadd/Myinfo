@@ -274,11 +274,6 @@ Bhai JEE ne lanka laga diya hai 🙂‍↕️🙂‍↕️
 
 </section>
 
- <h2>Today's Targets</h2>
-<ul id="todayList"></ul>
-
-<h2>Upcoming Targets</h2>
-<ul id="upcomingList"></ul>
 
 <section id="skills">
 </section>
@@ -299,88 +294,8 @@ Bhai JEE ne lanka laga diya hai 🙂‍↕️🙂‍↕️
 
 <script>
 
-// ===== ADVANCED TARGET SYSTEM =====
 
-function getTodayKey() {
-  const now = new Date();
-  if (now.getHours() < 4) now.setDate(now.getDate() - 1);
-  return now.toDateString();
-}
-
-const defaultTasks = [
-  "📚 Physics: 2 Lectures",
-  "🧪 Chemistry: Revision",
-  "📐 Maths: 30 Questions",
-  "📊 PYQ Analysis"
-];
-
-let data = JSON.parse(localStorage.getItem("targetSystem")) || {};
-
-const todayKey = getTodayKey();
-
-if (!data[todayKey]) {
-  data[todayKey] = defaultTasks.map(task => ({
-    text: task,
-    done: false
-  }));
-  localStorage.setItem("targetSystem", JSON.stringify(data));
-}
-
-const todayDiv = document.getElementById("todayList");
-
-data[todayKey].forEach((task, index) => {
-  const div = document.createElement("div");
-  div.className = "card";
-
-  div.innerHTML = `
-    <input type="checkbox" ${task.done ? "checked" : ""} 
-    onchange="toggleTask(${index})">
-    ${task.text}
-  `;
-
-  todayDiv.appendChild(div);
-});
-
-function toggleTask(i) {
-  data[todayKey][i].done = !data[todayKey][i].done;
-  localStorage.setItem("targetSystem", JSON.stringify(data));
-  location.reload();
-}
-
-const completed = data[todayKey].filter(t => t.done).length;
-const total = data[todayKey].length;
-
-document.getElementById("progressText").innerText =
-`Progress: ${completed}/${total} Completed ✅`;
-
-const upcomingDiv = document.getElementById("upcoming");
-
-for (let i = 1; i <= 3; i++) {
-  const d = new Date();
-  d.setDate(d.getDate() + i);
-
-  const div = document.createElement("div");
-  div.className = "card";
-  div.innerText = d.toDateString() + " → Planned Study Day";
-
-  upcomingDiv.appendChild(div);
-}
-
-const historyDiv = document.getElementById("history");
-
-Object.keys(data).reverse().forEach(date => {
-  if (date !== todayKey) {
-    const done = data[date].filter(t => t.done).length;
-    const total = data[date].length;
-
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerText = `${date} → ${done}/${total} Completed`;
-
-    historyDiv.appendChild(div);
-  }
-});
-
+<script>
  // FIX LOADER
 window.addEventListener("load",()=>{
   setTimeout(()=>{
@@ -389,14 +304,15 @@ window.addEventListener("load",()=>{
 });
 </script>
 
-
-
- <script>
+<script>
 fetch("https://opensheet.elk.sh/1A1In9joYUNj8kTljvEZ7DyZcGt7RsBsiMUcPi_LEbLA/Sheet1")
   .then(res => res.json())
   .then(data => {
-    const todayList = document.getElementById("todayList");
-    const upcomingList = document.getElementById("upcomingList");
+    const todayDiv = document.getElementById("todayList");
+    const upcomingDiv = document.getElementById("upcoming");
+
+    todayDiv.innerHTML = "";
+    upcomingDiv.innerHTML = "";
 
     const todayDate = new Date().toISOString().split("T")[0];
 
@@ -406,16 +322,15 @@ fetch("https://opensheet.elk.sh/1A1In9joYUNj8kTljvEZ7DyZcGt7RsBsiMUcPi_LEbLA/She
       targets.forEach(target => {
         if (!target) return;
 
-        const li = document.createElement("li");
+        const div = document.createElement("div");
+        div.className = "card";
 
-        li.innerHTML = `
-          <input type="checkbox"> ${target}
-        `;
+        div.innerHTML = `<input type="checkbox"> ${target}`;
 
         if (row.Date === todayDate) {
-          todayList.appendChild(li);
+          todayDiv.appendChild(div);
         } else if (row.Date > todayDate) {
-          upcomingList.appendChild(li);
+          upcomingDiv.appendChild(div);
         }
       });
     });
