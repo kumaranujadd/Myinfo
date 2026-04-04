@@ -258,12 +258,14 @@ Bhai JEE ne lanka laga diya hai 🙂‍↕️🙂‍↕️
 
 <!-- ✅ ADD THIS HERE -->
 <section id="daily-target">
-<h2>Daily Target 🎯</h2>
+<h2>Today Target 🎯</h2>
 
-<div class="card">📚 Complete 2 Lectures</div>
-<div class="card">🧠 Revise Notes</div>
-<div class="card">✍️ Solve 30 Questions</div>
-<div class="card">📊 Analyze Mistakes</div>
+<div class="glass">
+<p id="todayTarget"></p>
+</div>
+
+<h3>Previous Targets 📅</h3>
+<div id="history"></div>
 
 </section>
 
@@ -284,6 +286,48 @@ Bhai JEE ne lanka laga diya hai 🙂‍↕️🙂‍↕️
 </div>
 
 <script>
+
+// ===== TARGET SYSTEM =====
+
+function getTodayKey() {
+  const now = new Date();
+  if (now.getHours() < 4) {
+    now.setDate(now.getDate() - 1);
+  }
+  return now.toDateString();
+}
+
+const targets = [
+  "📚 Physics: 2 Lectures + Notes",
+  "🧪 Chemistry: 1 Lecture + Revision",
+  "📐 Maths: 30 Questions Practice",
+  "📊 PYQ Analysis + Mistakes Review"
+];
+
+const todayKey = getTodayKey();
+let data = JSON.parse(localStorage.getItem("targetsData")) || {};
+
+// Generate new target if not exists
+if (!data[todayKey]) {
+  const random = targets[Math.floor(Math.random() * targets.length)];
+  data[todayKey] = random;
+  localStorage.setItem("targetsData", JSON.stringify(data));
+}
+
+// Show today target
+document.getElementById("todayTarget").innerText = data[todayKey];
+
+// Show history
+const historyDiv = document.getElementById("history");
+
+Object.keys(data).reverse().forEach(date => {
+  const div = document.createElement("div");
+  div.className = "card";
+  div.innerText = date + " → " + data[date];
+  historyDiv.appendChild(div);
+});
+
+ 
 /* LOADER */
 window.addEventListener("load",()=>{
 setTimeout(()=>{
