@@ -335,29 +335,53 @@ fetch("https://opensheet.elk.sh/1A1In9joYUNj8kTljvEZ7DyZcGt7RsBsiMUcPi_LEbLA/She
 
     const grouped = {}; // 🔥 group by date
 
-    data.forEach(row => {
-      const targets = [row.T1, row.T2, row.T3, row.T4, row.T5, row.T6, row.T7];
+    const grouped = {};
 
-      targets.forEach(target => {
-        if (!target) return;
+data.forEach(row => {
+  const targets = [row.T1, row.T2, row.T3, row.T4, row.T5, row.T6, row.T7];
 
-        if (row.Date === todayDate) {
-          const div = document.createElement("div");
-          div.className = "card";
-          div.innerHTML = `<input type="checkbox"> ${target}`;
-          todayDiv.appendChild(div);
+  targets.forEach(target => {
+    if (!target) return;
 
-        } else if (row.Date > todayDate) {
+    if (row.Date === todayDate) {
+      const div = document.createElement("div");
+      div.className = "card";
+      div.innerHTML = `<input type="checkbox"> ${target}`;
+      todayDiv.appendChild(div);
 
-          if (!grouped[row.Date]) {
-            grouped[row.Date] = [];
-          }
+    } else if (row.Date > todayDate) {
 
-          grouped[row.Date].push(target);
-        }
-      });
-    });
+      if (!grouped[row.Date]) {
+        grouped[row.Date] = [];
+      }
 
+      grouped[row.Date].push(target);
+    }
+  });
+});
+
+Object.keys(grouped).forEach(date => {
+
+  const card = document.createElement("div");
+  card.className = "date-card";
+
+  const formattedDate = new Date(date).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short"
+  });
+
+  let targetsHTML = "";
+  grouped[date].forEach(t => {
+    targetsHTML += `<div><input type="checkbox"> ${t}</div>`;
+  });
+
+  card.innerHTML = `
+    <h3>${formattedDate}</h3>
+    ${targetsHTML}
+  `;
+
+  upcomingDiv.appendChild(card);
+});
     // 🔥 CREATE DATE CARDS
     Object.keys(grouped).forEach(date => {
 
