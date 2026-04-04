@@ -321,8 +321,6 @@ window.addEventListener("load",()=>{
 
 fetch("https://opensheet.elk.sh/1A1In9joYUNj8kTljvEZ7DyZcGt7RsBsiMUcPi_LEbLA/Sheet1")
   .then(res => res.json())
-  fetch("https://opensheet.elk.sh/1A1In9joYUNj8kTljvEZ7DyZcGt7RsBsiMUcPi_LEbLA/Sheet1")
-  .then(res => res.json())
   .then(data => {
 
     const todayDiv = document.getElementById("todayList");
@@ -333,32 +331,55 @@ fetch("https://opensheet.elk.sh/1A1In9joYUNj8kTljvEZ7DyZcGt7RsBsiMUcPi_LEbLA/She
 
     const todayDate = new Date().toISOString().split("T")[0];
 
-    const grouped = {}; // 🔥 group by date
-
     const grouped = {};
 
-data.forEach(row => {
-  const targets = [row.T1, row.T2, row.T3, row.T4, row.T5, row.T6, row.T7];
+    data.forEach(row => {
+      const targets = [row.T1, row.T2, row.T3, row.T4, row.T5, row.T6, row.T7];
 
-  targets.forEach(target => {
-    if (!target) return;
+      targets.forEach(target => {
+        if (!target) return;
 
-    if (row.Date === todayDate) {
-      const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `<input type="checkbox"> ${target}`;
-      todayDiv.appendChild(div);
+        if (row.Date === todayDate) {
+          const div = document.createElement("div");
+          div.className = "card";
+          div.innerHTML = `<input type="checkbox"> ${target}`;
+          todayDiv.appendChild(div);
 
-    } else if (row.Date > todayDate) {
+        } else if (row.Date > todayDate) {
 
-      if (!grouped[row.Date]) {
-        grouped[row.Date] = [];
-      }
+          if (!grouped[row.Date]) {
+            grouped[row.Date] = [];
+          }
 
-      grouped[row.Date].push(target);
-    }
+          grouped[row.Date].push(target);
+        }
+      });
+    });
+
+    Object.keys(grouped).forEach(date => {
+
+      const card = document.createElement("div");
+      card.className = "date-card";
+
+      const formattedDate = new Date(date).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short"
+      });
+
+      let targetsHTML = "";
+      grouped[date].forEach(t => {
+        targetsHTML += `<div><input type="checkbox"> ${t}</div>`;
+      });
+
+      card.innerHTML = `
+        <h3>${formattedDate}</h3>
+        ${targetsHTML}
+      `;
+
+      upcomingDiv.appendChild(card);
+    });
+
   });
-});
 
 Object.keys(grouped).forEach(date => {
 
