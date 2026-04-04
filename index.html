@@ -274,6 +274,12 @@ Bhai JEE ne lanka laga diya hai 🙂‍↕️🙂‍↕️
 
 </section>
 
+ <h2>Today's Targets</h2>
+<ul id="todayList"></ul>
+
+<h2>Upcoming Targets</h2>
+<ul id="upcomingList"></ul>
+
 <section id="skills">
 </section>
 
@@ -383,5 +389,37 @@ window.addEventListener("load",()=>{
 });
 </script>
 
+
+
+ <script>
+fetch("https://opensheet.elk.sh/1A1In9joYUNj8kTljvEZ7DyZcGt7RsBsiMUcPi_LEbLA/Sheet1")
+  .then(res => res.json())
+  .then(data => {
+    const todayList = document.getElementById("todayList");
+    const upcomingList = document.getElementById("upcomingList");
+
+    const todayDate = new Date().toISOString().split("T")[0];
+
+    data.forEach(row => {
+      const targets = [row.T1, row.T2, row.T3, row.T4, row.T5, row.T6, row.T7];
+
+      targets.forEach(target => {
+        if (!target) return;
+
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+          <input type="checkbox"> ${target}
+        `;
+
+        if (row.Date === todayDate) {
+          todayList.appendChild(li);
+        } else if (row.Date > todayDate) {
+          upcomingList.appendChild(li);
+        }
+      });
+    });
+  });
+</script>
 </body>
 </html>
