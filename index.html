@@ -275,8 +275,9 @@ Bhai JEE ne lanka laga diya hai 🙂‍↕️🙂‍↕️
 </section>
 
 <section id="skills">
+</section>
 
-
+ 
 <!-- Floating Icons -->
 <div class="floating-social">
 
@@ -372,6 +373,13 @@ Object.keys(data).reverse().forEach(date => {
 
     historyDiv.appendChild(div);
   }
+});
+
+ // FIX LOADER
+window.addEventListener("load",()=>{
+  setTimeout(()=>{
+    document.getElementById("loader").classList.add("hide-loader");
+  },1000);
 });
 </script>
 
