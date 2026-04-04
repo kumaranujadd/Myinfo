@@ -313,10 +313,22 @@ fetch("https://opensheet.elk.sh/1A1In9joYUNj8kTljvEZ7DyZcGt7RsBsiMUcPi_LEbLA/She
       targets.forEach(target => {
         if (!target) return;
 
-        const div = document.createElement("div");
-        div.className = "card";
+      const div = document.createElement("div");
+div.className = "card";
 
-        div.innerHTML = `<input type="checkbox"> ${target}`;
+const formattedDate = new Date(row.Date).toLocaleDateString("en-GB", {
+  day: "2-digit",
+  month: "short"
+});
+
+div.innerHTML = `
+  <div style="font-size:16px; margin-bottom:5px;">
+    <input type="checkbox"> ${target}
+  </div>
+  <div style="font-size:12px; color:#aaa;">
+    ${formattedDate}
+  </div>
+`;
 
         if (row.Date === todayDate) {
           todayDiv.appendChild(div);
