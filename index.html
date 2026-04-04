@@ -380,64 +380,6 @@ fetch("https://opensheet.elk.sh/1A1In9joYUNj8kTljvEZ7DyZcGt7RsBsiMUcPi_LEbLA/She
     });
 
   });
-
-Object.keys(grouped).forEach(date => {
-
-  const card = document.createElement("div");
-  card.className = "date-card";
-
-  const formattedDate = new Date(date).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short"
-  });
-
-  let targetsHTML = "";
-  grouped[date].forEach(t => {
-    targetsHTML += `<div><input type="checkbox"> ${t}</div>`;
-  });
-
-  card.innerHTML = `
-    <h3>${formattedDate}</h3>
-    ${targetsHTML}
-  `;
-
-  upcomingDiv.appendChild(card);
-});
-    // 🔥 CREATE DATE CARDS
-    Object.keys(grouped).forEach(date => {
-
-      const card = document.createElement("div");
-      card.className = "date-card";
-
-      const formattedDate = new Date(date).toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short"
-      });
-
-      let targetsHTML = "";
-      grouped[date].forEach(t => {
-        targetsHTML += `<div><input type="checkbox"> ${t}</div>`;
-      });
-
-      card.innerHTML = `
-        <h3>${formattedDate}</h3>
-        ${targetsHTML}
-      `;
-
-      upcomingDiv.appendChild(card);
-    });
-
-  });
-div.innerHTML = `<input type="checkbox"> ${target}`;
-       
-        if (row.Date === todayDate) {
-          todayDiv.appendChild(div);
-        } else if (row.Date > todayDate) {
-          upcomingDiv.appendChild(div);
-        }
-      });
-    });
-  });
 </script>
 </body>
 </html>
