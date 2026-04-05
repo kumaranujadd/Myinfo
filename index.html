@@ -2,45 +2,12 @@
 <html>
 <head>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Anuj | Dev Portfolio</title>
 
 <style>
- .icon-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-   .floating-social {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.float-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  background: #0088cc;
-  overflow: hidden;
-}
-
-.float-btn i {
-  font-size: 22px;
-  color: white;
-}
-
-/* X button */
-.float-btn.x {
-  background: black;
-}
 body{
 margin:0;
 font-family:Arial,sans-serif;
@@ -50,7 +17,7 @@ overflow-x:hidden;
 scroll-behavior:smooth;
 }
 
-/* ===== LOADING SCREEN ===== */
+/* LOADER */
 #loader{
 position:fixed;
 width:100%;
@@ -61,9 +28,7 @@ justify-content:center;
 align-items:center;
 flex-direction:column;
 z-index:9999;
-transition:opacity .8s ease, visibility .8s;
 }
-
 .loader-ring{
 width:70px;
 height:70px;
@@ -71,42 +36,15 @@ border-radius:50%;
 border:4px solid #1e293b;
 border-top:4px solid #38bdf8;
 animation:spin 1s linear infinite;
-margin-bottom:20px;
 }
-@keyframes spin{
-to{transform:rotate(360deg);}
-}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-.hide-loader{
-opacity:0;
-visibility:hidden;
-}
-
-/* ===== Neon Background ===== */
-.neon{
-position:fixed;
-width:200px;
-height:200px;
-background:radial-gradient(circle,#38bdf8,transparent);
-filter:blur(80px);
-opacity:.25;
-animation:float 12s infinite alternate;
-z-index:-1;
-}
-.neon:nth-child(1){top:10%;left:10%;}
-.neon:nth-child(2){bottom:10%;right:10%;animation-delay:3s;}
-@keyframes float{
-from{transform:translateY(0);}
-to{transform:translateY(60px);}
-}
-
-/* ===== Navbar ===== */
+/* NAV */
 nav{
 position:fixed;
 width:100%;
 padding:15px;
 background:#020617cc;
-backdrop-filter:blur(8px);
 text-align:center;
 z-index:100;
 }
@@ -116,8 +54,8 @@ margin:15px;
 text-decoration:none;
 font-weight:bold;
 }
-nav a:hover{color:#38bdf8;}
 
+/* SECTION */
 section{
 min-height:100vh;
 display:flex;
@@ -128,121 +66,53 @@ text-align:center;
 padding:40px;
 }
 
-/* ===== Gradient Name ===== */
-.gradient{
-font-size:55px;
-background:linear-gradient(90deg,#38bdf8,#a78bfa,#38bdf8);
-background-size:200%;
--webkit-background-clip:text;
-color:transparent;
-animation:shine 4s linear infinite;
-}
-@keyframes shine{
-0%{background-position:0%;}
-100%{background-position:200%;}
-}
-
-#typing{font-size:22px;margin-top:10px;opacity:.85;}
-
-/* Chill panel */
-.glass{
-background:rgba(2,6,23,0.6);
-border:1px solid #1e293b;
-backdrop-filter:blur(12px);
-border-radius:14px;
-padding:20px;
-margin-top:20px;
-box-shadow:0 0 20px #0ea5e9;
-}
-
-/* Cards */
+/* CARDS */
 .card{
 background:#020617;
-padding:20px;
-margin:15px;
-border-radius:14px;
+padding:15px;
+margin:10px;
+border-radius:12px;
 border:1px solid #1e293b;
-transition:.4s;
 }
 
-.card:hover{
-transform:scale(1.06);
-box-shadow:0 0 25px #38bdf8;
-}
-
-/* Button */
-.btn{
-margin-top:15px;
-padding:10px 20px;
-border-radius:8px;
-border:1px solid #38bdf8;
-color:white;
-text-decoration:none;
-transition:.3s;
-}
-.btn:hover{
-background:#38bdf8;
-box-shadow:0 0 15px #38bdf8;
-}
-
-/* Floating Social */
-.floating-social{
-position:fixed;
-right:20px;
-bottom:20px;
-display:flex;
-flex-direction:column;
-gap:12px;
-}
-.float-btn{
-width:50px;height:50px;
-border-radius:50%;
+/* DATE CARD */
+.date-card{
+min-width:220px;
 background:#020617;
+border:2px solid #1e293b;
+border-radius:15px;
+padding:15px;
+flex-shrink:0;
+}
+
+/* SCROLL FIX */
+#upcoming, #history{
 display:flex;
-justify-content:center;
-align-items:center;
+overflow-x:auto;
+gap:20px;
+padding:20px;
+scroll-behavior:smooth;
+-webkit-overflow-scrolling:touch;
+}
+#history{
+justify-content:flex-start;
+}
+#upcoming::-webkit-scrollbar,
+#history::-webkit-scrollbar{
+display:none;
+}
+
+/* BUTTON */
+.scroll-btn{
+background:#020617;
+color:white;
 border:1px solid #38bdf8;
-transition:.3s;
+padding:5px 10px;
+border-radius:6px;
+cursor:pointer;
 }
-.float-btn svg{fill:white;width:24px;}
-.float-btn:hover{
+.scroll-btn:hover{
 background:#38bdf8;
-transform:scale(1.15);
-box-shadow:0 0 20px #38bdf8;
-}
-
-/* Mouse Glow */
-#cursorGlow{
-position:fixed;
-width:150px;height:150px;
-border-radius:50%;
-background:radial-gradient(circle,#38bdf8,transparent);
-pointer-events:none;
-opacity:.25;
-transform:translate(-50%,-50%);
-}
-
- #upcoming {
-  display: flex;
-  overflow-x: auto;
-  gap: 20px;
-  padding: 20px;
-  scroll-behavior: smooth;
-}
-
-.date-card {
-  min-width: 220px;
-  max-width: 220px;
-  background: #020617;
-  border: 2px solid #1e293b;
-  border-radius: 20px;
-  padding: 15px;
-  flex-shrink: 0;
-}
-
-.date-card h3 {
-  margin-bottom: 10px;
-  text-align: center;
 }
 </style>
 </head>
@@ -252,192 +122,147 @@ transform:translate(-50%,-50%);
 <!-- LOADER -->
 <div id="loader">
 <div class="loader-ring"></div>
-<div>Loading...</div>
 </div>
-
-<div class="neon"></div>
-<div class="neon"></div>
-<div id="cursorGlow"></div>
 
 <nav>
-<a href="#home">Home</a>
-<a href="#skills">Skills</a>
-<a href="#daily-target">Daily Target</a>
+<a href="#">Home</a>
+<a href="#">Daily Target</a>
 </nav>
 
-<section id="home">
-<h1 class="gradient">Hi, I'm Anuj 👋</h1>
-<h2 id="typing"></h2>
+<section>
 
-<div class="glass">
-Bhai JEE ne lanka laga diya hai 🙂‍↕️🙂‍↕️
-</div>
- </section>
-
-<!-- ✅ ADD THIS HERE -->
-<section id="daily-target">
 <h2>Today Target 🎯</h2>
-
 <div id="todayList"></div>
 
-<div class="glass">
-<p id="progressText"></p>
+<h2>Upcoming Targets ⏳</h2>
+
+<div>
+<button class="scroll-btn" onclick="scrollLeft('upcoming')">⬅</button>
+<button class="scroll-btn" onclick="scrollRight('upcoming')">➡</button>
 </div>
 
-<h2>Upcoming Targets ⏳</h2>
 <div id="upcoming"></div>
 
 <h2>Previous Targets 📅</h2>
+
+<div>
+<button class="scroll-btn" onclick="scrollLeft('history')">⬅</button>
+<button class="scroll-btn" onclick="scrollRight('history')">➡</button>
+</div>
+
 <div id="history"></div>
 
 </section>
 
-
-<section id="skills">
-</section>
-
- 
-<!-- Floating Icons -->
-<div class="floating-social">
-
-<a class="float-btn" href="https://t.me/hackergone" target="_blank">
-  <img src="telegram.png" class="icon-img">
-</a>
-
-<a class="float-btn" href="https://twitter.com/YOUR_USERNAME" target="_blank">
-   <i class="fab fa-x-twitter"></i>
-</a>
-
-</div>
-
-
 <script>
+// loader
 window.addEventListener("load", () => {
-  setTimeout(() => {
-    document.getElementById("loader").classList.add("hide-loader");
-  }, 1000);
+setTimeout(()=>{
+document.getElementById("loader").style.display="none";
+},800);
 });
 
+// scroll buttons
+function scrollLeft(id){
+document.getElementById(id).scrollBy({left:-300,behavior:'smooth'});
+}
+function scrollRight(id){
+document.getElementById(id).scrollBy({left:300,behavior:'smooth'});
+}
+
+// fetch data
 fetch("https://opensheet.elk.sh/1A1In9joYUNj8kTljvEZ7DyZcGt7RsBsiMUcPi_LEbLA/Sheet1")
-  .then(res => res.json())
-  .then(data => {
+.then(res=>res.json())
+.then(data=>{
 
-    const todayDiv = document.getElementById("todayList");
-    const upcomingDiv = document.getElementById("upcoming");
-    const historyDiv = document.getElementById("history");
+const todayDiv=document.getElementById("todayList");
+const upcomingDiv=document.getElementById("upcoming");
+const historyDiv=document.getElementById("history");
 
-    todayDiv.innerHTML = "";
-    upcomingDiv.innerHTML = "";
-    historyDiv.innerHTML = "";
+todayDiv.innerHTML="";
+upcomingDiv.innerHTML="";
+historyDiv.innerHTML="";
 
-    const todayDate = new Date().toISOString().split("T")[0];
+const todayDate=new Date().toISOString().split("T")[0];
 
-    const upcomingGrouped = {};
-    const historyGrouped = {};
+const upcomingGrouped={};
+const historyGrouped={};
 
-    data.forEach(row => {
+data.forEach(row=>{
 
-      const tasks = [
-        { task: row.T1, status: row.S1 },
-        { task: row.T2, status: row.S2 },
-        { task: row.T3, status: row.S3 }
-      ];
+const tasks=[
+{task:row.T1,status:row.S1},
+{task:row.T2,status:row.S2},
+{task:row.T3,status:row.S3} // FIXED
+];
 
-      tasks.forEach(item => {
-        if (!item.task) return;
+tasks.forEach(item=>{
+if(!item.task) return;
 
-        const isDone = item.status === "Done";
+const isDone=(item.status||"").trim()==="Done";
 
-        // ✅ TODAY
-        if (row.Date === todayDate) {
+// TODAY
+if(row.Date===todayDate){
+const div=document.createElement("div");
+div.className="card";
 
-          const div = document.createElement("div");
-          div.className = "card";
+div.innerHTML=`
+<span style="${isDone?'text-decoration:line-through;opacity:0.6;':''}">
+${item.task}
+</span>`;
+todayDiv.appendChild(div);
+}
 
-          div.innerHTML = `
-            <span style="${isDone ? 'text-decoration: line-through; opacity:0.6;' : ''}">
-              ${item.task}
-            </span>
-          `;
+// UPCOMING
+else if(row.Date>todayDate){
+if(!upcomingGrouped[row.Date]) upcomingGrouped[row.Date]=[];
+upcomingGrouped[row.Date].push(item);
+}
 
-          todayDiv.appendChild(div);
-        }
+// PREVIOUS
+else{
+if(!historyGrouped[row.Date]) historyGrouped[row.Date]=[];
+historyGrouped[row.Date].push(item);
+}
 
-        // ✅ UPCOMING
-        else if (row.Date > todayDate) {
-          if (!upcomingGrouped[row.Date]) {
-            upcomingGrouped[row.Date] = [];
-          }
-          upcomingGrouped[row.Date].push(item);
-        }
+});
 
-        // ✅ PREVIOUS
-        else if (row.Date < todayDate) {
-          if (!historyGrouped[row.Date]) {
-            historyGrouped[row.Date] = [];
-          }
-          historyGrouped[row.Date].push(item);
-        }
+});
 
-      });
+// UPCOMING
+Object.keys(upcomingGrouped).sort().forEach(date=>{
+const card=document.createElement("div");
+card.className="date-card";
 
-    });
+let html="";
+upcomingGrouped[date].forEach(item=>{
+const isDone=(item.status||"").trim()==="Done";
+html+=`<div style="${isDone?'text-decoration:line-through;opacity:0.6;':''}">
+${item.task}</div>`;
+});
 
-    // 🔥 UPCOMING CARDS
-    Object.keys(upcomingGrouped).sort().forEach(date => {
+card.innerHTML=`<h3>${new Date(date).toDateString().slice(4,10)}</h3>${html}`;
+upcomingDiv.appendChild(card);
+});
 
-      const card = document.createElement("div");
-      card.className = "date-card";
+// PREVIOUS
+Object.keys(historyGrouped).sort().reverse().forEach(date=>{
+const card=document.createElement("div");
+card.className="date-card";
 
-      const formattedDate = new Date(date).toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short"
-      });
+let html="";
+historyGrouped[date].forEach(item=>{
+const isDone=(item.status||"").trim()==="Done";
+html+=`<div style="${isDone?'text-decoration:line-through;opacity:0.6;':''}">
+${item.task}</div>`;
+});
 
-      let html = "";
+card.innerHTML=`<h3>${new Date(date).toDateString().slice(4,10)}</h3>${html}`;
+historyDiv.appendChild(card);
+});
 
-      upcomingGrouped[date].forEach(item => {
-        const isDone = item.status === "Done";
-
-        html += `
-          <div style="${isDone ? 'text-decoration: line-through; opacity:0.6;' : ''}">
-            ${item.task}
-          </div>
-        `;
-      });
-
-      card.innerHTML = `<h3>${formattedDate}</h3>${html}`;
-      upcomingDiv.appendChild(card);
-    });
-
-    // 🔥 PREVIOUS CARDS (REVERSE ORDER - LATEST FIRST)
-    Object.keys(historyGrouped).sort().reverse().forEach(date => {
-
-      const card = document.createElement("div");
-      card.className = "date-card";
-
-      const formattedDate = new Date(date).toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short"
-      });
-
-      let html = "";
-
-      historyGrouped[date].forEach(item => {
-        const isDone = item.status === "Done";
-
-        html += `
-          <div style="${isDone ? 'text-decoration: line-through; opacity:0.6;' : ''}">
-            ${item.task}
-          </div>
-        `;
-      });
-
-      card.innerHTML = `<h3>${formattedDate}</h3>${html}`;
-      historyDiv.appendChild(card);
-    });
-
-  });
+});
 </script>
+
 </body>
 </html>
