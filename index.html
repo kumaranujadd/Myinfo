@@ -637,13 +637,11 @@ function loadTimerFromServer() {
 
       if (data.length === 0) return;
 
-    const running = data.reverse().find(row => row.start && !row.end);
-
+    const running = data.reverse().find(row => row.start && (row.end === "" || !row.end));
 if (running) {
- const start = new Date(running.date + "T" + running.start);
-
+const start = new Date((running.date || running.Date) + "T" + (running.start || running.StartTime));
   // 🔥 only start if not already running
-  if (!startTimeGlobal) {
+ if (!startTimeGlobal || isNaN(startTimeGlobal)) {
     startTimeGlobal = start;
     runTimer();
   }
