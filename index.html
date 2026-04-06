@@ -641,10 +641,10 @@ function loadTimerFromServer() {
 if (running) {
 const start = new Date((running.date || running.Date) + "T" + (running.start || running.StartTime));
   // 🔥 only start if not already running
- if (!startTimeGlobal || isNaN(startTimeGlobal)) {
+
     startTimeGlobal = start;
     runTimer();
-  }
+ 
 } else {
   clearInterval(timerInterval);
   startTimeGlobal = null;
