@@ -637,14 +637,14 @@ function loadTimerFromServer() {
 
       if (data.length === 0) return;
 
-      const last = data[data.length - 1];
+     const running = data.reverse().find(row => row.StartTime && !row.EndTime);
 
-      if (last.StartTime && !last.EndTime) {
-        const start = new Date(last.Date + "T" + last.StartTime);
+if (running) {
+  const start = new Date(running.Date + "T" + running.StartTime);
 
-        startTimeGlobal = start;
-        runTimer();
-      }
+  startTimeGlobal = start;
+  runTimer();
+}
     });
 }
 
