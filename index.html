@@ -633,13 +633,14 @@ function loadTimerFromServer() {
   fetch(API_URL)
     .then(res => res.json())
     .then(data => {
+     console.log(data);
 
       if (data.length === 0) return;
 
     const running = data.reverse().find(row => row.start && !row.end);
 
 if (running) {
-  const start = new Date(running.Date + "T" + running.StartTime);
+ const start = new Date(running.date + "T" + running.start);
 
   // 🔥 only start if not already running
   if (!startTimeGlobal) {
