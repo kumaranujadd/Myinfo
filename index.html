@@ -640,10 +640,12 @@ function loadTimerFromServer() {
     const running = data.reverse().find(row => row.start && (row.end === "" || !row.end));
 if (running) {
 const start = new Date((running.date || running.Date) + "T" + (running.start || running.StartTime));
-  // 🔥 only start if not already running
 
-    startTimeGlobal = start;
-    runTimer();
+   // 🔥 only update if different
+if (!startTimeGlobal || startTimeGlobal.getTime() !== start.getTime()) {
+  startTimeGlobal = start;
+  runTimer();
+}
  
 } else {
   clearInterval(timerInterval);
