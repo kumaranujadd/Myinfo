@@ -568,25 +568,12 @@ function formatTime(ms) {
   return `${h}:${m}:${s}`;
 }
 
-// update display
-function updateDisplay() {
-  const start = localStorage.getItem("startTime");
-  const saved = localStorage.getItem("savedTime") || 0;
-
-  let elapsed = parseInt(saved);
-
-  if (start) {
-    elapsed += Date.now() - parseInt(start);
-  }
-
-  document.getElementById("timerDisplay").innerText = formatTime(elapsed);
-}
 
 // START
-function startTimer() {
+
+ function startTimer() {
   const now = new Date();
 
-  // 🔥 send to sheet
   fetch(API_URL, {
     method: "POST",
     body: JSON.stringify({
@@ -595,10 +582,8 @@ function startTimer() {
     })
   });
 
-  if (localStorage.getItem("startTime")) return;
-
-  localStorage.setItem("startTime", Date.now());
-  timerInterval = setInterval(updateDisplay, 1000);
+  startTimeGlobal = now;
+  runTimer();
 }
 
 // STOP
@@ -614,38 +599,20 @@ function stopTimer() {
     })
   });
 
-  const start = localStorage.getItem("startTime");
-
-  if (start) {
-    let elapsed = Date.now() - parseInt(start);
-    let saved = parseInt(localStorage.getItem("savedTime") || 0);
-
-    localStorage.setItem("savedTime", saved + elapsed);
-    localStorage.removeItem("startTime");
-  }
+ 
 
   clearInterval(timerInterval);
 }
 
 // RESET
 function resetTimer() {
-  localStorage.removeItem("startTime");
-  localStorage.removeItem("savedTime");
   clearInterval(timerInterval);
-  updateDisplay();
+  startTimeGlobal = null;
+  document.getElementById("timerDisplay").innerText = "00:00:00";
 }
 
 // AUTO LOAD
-window.onload = () => {
-  updateDisplay();
 
-  if (localStorage.getItem("startTime")) {
-    timerInterval = setInterval(updateDisplay, 1000);
-  }
-};
-
-
- fetch("https://opensheet.elk.sh/YOUR_SHEET_ID/Sheet2")
   .then(res => res.json())
   .then(data => {
 
@@ -670,7 +637,44 @@ window.onload = () => {
     }
   });
 
- 
+
+ let startTimeGlobal = null;
+
+function runTimer() {
+  clearInterval(timerInterval);
+
+  timerInterval = setInterval(() => {
+    if (!startTimeGlobal) return;
+
+    const now = new Date();
+    const diff = now - startTimeGlobal;
+
+    document.getElementById("timerDisplay").innerText = formatTime(diff);
+  }, 1000);
+}
+
+function loadTimerFromServer() {
+  fetch(API_URL)
+    .then(res => res.json())
+    .then(data => {
+
+      if (data.length === 0) return;
+
+      const last = data[data.length - 1];
+
+      if (last.StartTime && !last.EndTime) {
+        const start = new Date(last.Date + "T" + last.StartTime);
+
+        startTimeGlobal = start;
+        runTimer();
+      }
+    });
+}
+
+// FINAL LOAD
+window.onload = () => {
+  loadTimerFromServer();
+};
 </script>
 </body>
 </html>
