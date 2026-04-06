@@ -651,6 +651,11 @@ if (running) {
 // FINAL LOAD
 window.addEventListener("load", () => {
   loadTimerFromServer();
+
+  // 🔥 auto sync every 3 sec
+  setInterval(() => {
+    loadTimerFromServer();
+  }, 3000);
 });
 </script>
 </body>
