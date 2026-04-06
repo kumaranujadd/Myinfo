@@ -571,7 +571,8 @@ function formatTime(ms) {
 
 // START
 
- function startTimer() {
+ let justStarted = false;
+function startTimer() {
   if (startTimeGlobal) return;
   
   const now = new Date();
@@ -586,6 +587,11 @@ function formatTime(ms) {
 
   startTimeGlobal = now;
   runTimer();
+
+  justStarted = true;
+  setTimeout(() => {
+    justStarted = false;
+  }, 5000); // 5 sec ignore
 }
 
 // STOP
@@ -648,13 +654,12 @@ if (!startTimeGlobal || startTimeGlobal.getTime() !== start.getTime()) {
 }
  
 } else {
+  if (justStarted) return; // 🔥 ignore for few seconds
+
   clearInterval(timerInterval);
   startTimeGlobal = null;
 
-  // 🔥 ADD THIS (display reset)
   document.getElementById("timerDisplay").innerText = "00:00:00";
-}
-    });
 }
 
 // FINAL LOAD
