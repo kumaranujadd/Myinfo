@@ -592,7 +592,6 @@ function formatTime(ms) {
 function stopTimer() {
   const now = new Date();
 
-  // 🔥 send to sheet
   fetch(API_URL, {
     method: "POST",
     body: JSON.stringify({
@@ -601,11 +600,11 @@ function stopTimer() {
     })
   });
 
- 
-
   clearInterval(timerInterval);
-}
 
+  // 🔥 ADD THIS LINE (MOST IMPORTANT)
+  startTimeGlobal = null;
+}
 // RESET
 function resetTimer() {
   clearInterval(timerInterval);
@@ -648,9 +647,11 @@ if (running) {
     runTimer();
   }
 } else {
-  // 🔥 if no running session → STOP timer
   clearInterval(timerInterval);
   startTimeGlobal = null;
+
+  // 🔥 ADD THIS (display reset)
+  document.getElementById("timerDisplay").innerText = "00:00:00";
 }
     });
 }
