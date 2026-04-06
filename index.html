@@ -642,8 +642,15 @@ function loadTimerFromServer() {
 if (running) {
   const start = new Date(running.Date + "T" + running.StartTime);
 
-  startTimeGlobal = start;
-  runTimer();
+  // 🔥 only start if not already running
+  if (!startTimeGlobal) {
+    startTimeGlobal = start;
+    runTimer();
+  }
+} else {
+  // 🔥 if no running session → STOP timer
+  clearInterval(timerInterval);
+  startTimeGlobal = null;
 }
     });
 }
