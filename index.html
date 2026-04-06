@@ -572,6 +572,8 @@ function formatTime(ms) {
 // START
 
  function startTimer() {
+  if (startTimeGlobal) return;
+  
   const now = new Date();
 
   fetch(API_URL, {
