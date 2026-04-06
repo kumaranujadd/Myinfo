@@ -636,7 +636,7 @@ function loadTimerFromServer() {
 
       if (data.length === 0) return;
 
-     const running = data.reverse().find(row => row.StartTime && !row.EndTime);
+    const running = data.reverse().find(row => row.start && !row.end);
 
 if (running) {
   const start = new Date(running.Date + "T" + running.StartTime);
