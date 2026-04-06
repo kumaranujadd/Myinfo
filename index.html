@@ -644,6 +644,33 @@ window.onload = () => {
   }
 };
 
+
+ fetch("https://opensheet.elk.sh/YOUR_SHEET_ID/Sheet2")
+  .then(res => res.json())
+  .then(data => {
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const todayRows = data.filter(row => row.Date === today);
+
+    if (todayRows.length === 0) return;
+
+    const last = todayRows[todayRows.length - 1];
+
+    if (!last.EndTime) {
+      // 🔥 running timer
+      const start = new Date(today + "T" + last.StartTime);
+
+      setInterval(() => {
+        const now = new Date();
+        const diff = now - start;
+
+        document.getElementById("timerDisplay").innerText = formatTime(diff);
+      }, 1000);
+    }
+  });
+
+ 
 </script>
 </body>
 </html>
