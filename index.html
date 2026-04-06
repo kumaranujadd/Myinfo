@@ -222,12 +222,14 @@ opacity:.25;
 transform:translate(-50%,-50%);
 }
 
- #upcoming {
+#upcoming,
+#history {
   display: flex;
   overflow-x: auto;
   gap: 20px;
   padding: 20px;
   scroll-behavior: smooth;
+  width: 100%;
 }
 
 .date-card {
@@ -284,6 +286,37 @@ transform:translate(-50%,-50%);
  #upcoming::-webkit-scrollbar,
 #history::-webkit-scrollbar {
   display: none;
+}
+
+ .scroll-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.scroll-wrapper #upcoming,
+.scroll-wrapper #history {
+  width: 100%;
+}
+
+
+ .scroll-btn.left {
+  left: 5px;
+}
+
+.scroll-btn.right {
+  right: 5px;
+}
+
+
+ #upcoming,
+#history {
+  scroll-snap-type: x mandatory;
+}
+
+.date-card {
+  scroll-snap-align: start;
 }
 </style>
 </head>
