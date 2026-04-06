@@ -396,9 +396,18 @@ Bhai JEE ne lanka laga diya hai 🙂‍↕️🙂‍↕️
 <a class="float-btn" href="https://twitter.com/YOUR_USERNAME" target="_blank">
    <i class="fab fa-x-twitter"></i>
 </a>
-
 </div>
 
+
+ <div class="glass">
+  <h2>Study Timer ⏱️</h2>
+
+  <h1 id="timerDisplay">00:00:00</h1>
+
+  <button onclick="startTimer()" class="btn">▶ Start</button>
+  <button onclick="stopTimer()" class="btn">⏹ Stop</button>
+  <button onclick="resetTimer()" class="btn">🔄 Reset</button>
+</div>
 
 <script>
 window.addEventListener("load", () => {
@@ -543,6 +552,94 @@ function scrollRightFunc(id) {
 }
 
  const API_URL = "https://script.google.com/macros/s/AKfycbwfyW14gXtjvRHP4J2kQfLZ7WlMxABHEVEkjPL9whxmYZISUmmmdYHM2Ckj0VSGkZ_7/exec";
+
+let timerInterval = null;
+
+// format time
+function formatTime(ms) {
+  let totalSeconds = Math.floor(ms / 1000);
+  let h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+  let m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+  let s = String(totalSeconds % 60).padStart(2, '0');
+  return `${h}:${m}:${s}`;
+}
+
+// update display
+function updateDisplay() {
+  const start = localStorage.getItem("startTime");
+  const saved = localStorage.getItem("savedTime") || 0;
+
+  let elapsed = parseInt(saved);
+
+  if (start) {
+    elapsed += Date.now() - parseInt(start);
+  }
+
+  document.getElementById("timerDisplay").innerText = formatTime(elapsed);
+}
+
+// START
+function startTimer() {
+  const now = new Date();
+
+  // 🔥 send to sheet
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      date: now.toISOString().split("T")[0],
+      start: now.toTimeString().split(" ")[0]
+    })
+  });
+
+  if (localStorage.getItem("startTime")) return;
+
+  localStorage.setItem("startTime", Date.now());
+  timerInterval = setInterval(updateDisplay, 1000);
+}
+
+// STOP
+function stopTimer() {
+  const now = new Date();
+
+  // 🔥 send to sheet
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      date: now.toISOString().split("T")[0],
+      end: now.toTimeString().split(" ")[0]
+    })
+  });
+
+  const start = localStorage.getItem("startTime");
+
+  if (start) {
+    let elapsed = Date.now() - parseInt(start);
+    let saved = parseInt(localStorage.getItem("savedTime") || 0);
+
+    localStorage.setItem("savedTime", saved + elapsed);
+    localStorage.removeItem("startTime");
+  }
+
+  clearInterval(timerInterval);
+}
+
+// RESET
+function resetTimer() {
+  localStorage.removeItem("startTime");
+  localStorage.removeItem("savedTime");
+  clearInterval(timerInterval);
+  updateDisplay();
+}
+
+// AUTO LOAD
+window.onload = () => {
+  updateDisplay();
+
+  if (localStorage.getItem("startTime")) {
+    timerInterval = setInterval(updateDisplay, 1000);
+  }
+};
+
 </script>
 </body>
 </html>
