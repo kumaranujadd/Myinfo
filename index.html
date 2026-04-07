@@ -448,74 +448,26 @@ Bhai JEE ne lanka laga diya hai 🙂‍↕️🙂‍↕️
 
 <script>
 window.addEventListener("load", () => {
+  // Loader hatane ka logic
   setTimeout(() => {
-    document.getElementById("loader").classList.add("hide-loader");
+    const loader = document.getElementById("loader");
+    if(loader) loader.classList.add("hide-loader");
   }, 1000);
 
-  // LOCAL BACKUP
-  const saved = localStorage.getItem("startTime");
-  if (saved) {
-    startTimeGlobal = new Date(saved);
-    runTimer();
-  }
-
-  // SERVER SYNC
+  // Sync Timer logic
   loadTimerFromServer();
-  setInterval(loadTimerFromServer, 5000);
+  setInterval(loadTimerFromServer, 15000); // 15 sec delay for Google Sheets
 });
-
-// ... (keep your fetch for "Today Target" logic here) ...
-
-const API_URL = "https://script.google.com/macros/s/AKfycbwfyW14gXtjvRHP4J2kQfLZ7WlMxABHEVEkjPL9whxmYZISUmmmdYHM2Ckj0VSGkZ_7/exec";
 
 let timerInterval = null;
 let startTimeGlobal = null;
 let isManuallyStopped = false;
 
-function formatTime(ms) {
-  let totalSeconds = Math.floor(ms / 1000);
-  let h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-  let m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-  let s = String(totalSeconds % 60).padStart(2, '0');
-  return `${h}:${m}:${s}`;
-}
-
-function updateStatus() {
-  const dot = document.getElementById("statusDot");
-  const text = document.getElementById("statusText");
-  if (startTimeGlobal) {
-    dot.classList.add("studying");
-    text.innerText = "Studying";
-  } else {
-    dot.classList.remove("studying");
-    text.innerText = "Not Studying";
-  }
-}
-
-function startTimer() {
-  if (startTimeGlobal) return;
-  const now = new Date();
-  localStorage.setItem("startTime", now.toISOString());
-
-  fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      date: now.toISOString().split("T")[0],
-      start: now.toTimeString().split(" ")[0]
-    })
-  });
-
-  startTimeGlobal = now;
-  runTimer();
-  updateStatus();
-}
-
 function stopTimer() {
-  isManuallyStopped = true; // Sync lock on
+  isManuallyStopped = true; 
   clearInterval(timerInterval);
   
-  // Turant UI update taaki lag na dikhe
-  let finalTime = startTimeGlobal; 
+  // Turant reset karo taaki screen pe 00:00:00 dikhe
   startTimeGlobal = null;
   localStorage.removeItem("startTime");
   document.getElementById("timerDisplay").innerText = "00:00:00";
@@ -529,43 +481,14 @@ function stopTimer() {
       end: now.toTimeString().split(" ")[0]
     })
   }).finally(() => {
-    // Lock ko 15 sec tak rakho jab tak Sheet update na ho jaye
-    setTimeout(() => { 
-      isManuallyStopped = false; 
-    }, 15000);
+    // 15 seconds ka lock taaki sheet update hone ka time mile
+    setTimeout(() => { isManuallyStopped = false; }, 15000);
   });
-} // <--- Sirf ek bracket yahan hona chahiye
-  startTimeGlobal = null;
-  localStorage.removeItem("startTime");
-  document.getElementById("timerDisplay").innerText = "00:00:00";
-  updateStatus();
-}
-
-function resetTimer() {
-  isManuallyStopped = true; // Block sync
-  clearInterval(timerInterval);
-  startTimeGlobal = null;
-  localStorage.removeItem("startTime");
-  document.getElementById("timerDisplay").innerText = "00:00:00";
-  updateStatus();
-  
-  // 5 second baad sync firse allow karein
-  setTimeout(() => { isManuallyStopped = false; }, 5000);
-}
-
-function runTimer() {
-  clearInterval(timerInterval);
-  timerInterval = setInterval(() => {
-    if (!startTimeGlobal) return;
-    const now = new Date();
-    const diff = now - startTimeGlobal;
-    document.getElementById("timerDisplay").innerText = formatTime(diff);
-    updateStatus();
-  }, 1000);
 }
 
 function loadTimerFromServer() {
-  if (isManuallyStopped || startTimeGlobal) return; // Agar timer chal raha hai ya abhi stop kiya hai, toh sync mat karo
+  // Agar timer chal raha hai ya abhi stop kiya hai, toh sync mat karo
+  if (isManuallyStopped || startTimeGlobal) return; 
 
   fetch(API_URL)
     .then(res => res.json())
@@ -581,7 +504,7 @@ function loadTimerFromServer() {
         startTimeGlobal = new Date(startStr);
         runTimer();
       }
-    }).catch(err => console.log("Sync error:", err));
+    }).catch(err => console.error("Sync error:", err));
 }
  
 </script>
