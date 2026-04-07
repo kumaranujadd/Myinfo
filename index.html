@@ -491,39 +491,45 @@ function renderTargets(data) {
     upcoming.innerHTML = "";
     history.innerHTML = "";
 
-    const todayStr = new Date().toISOString().split('T')[0];
+    // Aaj ki date set karo (Midnight tak reset karke accurate comparison ke liye)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
     data.forEach(item => {
-        // Headers match karo: Date aur Task names (T1, T2, T3)
-        const itemDate = item.Date; 
-        
-        // Task display ke liye text taiyar karo (Physics Class, Math Class, etc.)
-        // Status display (Done, Pending) - Done hai toh checkmark.
-        const task1Html = item.T1 ? `<p>${item.T1} ${item.S1 === "Done" ? "✅" : "(Pending)"}</p>` : "";
-        const task2Html = item.T2 ? `<p>${item.T2} ${item.S2 === "Done" ? "✅" : "(Pending)"}</p>` : "";
-        const task3Html = item.T3 ? `<p>${item.T3} ${item.S3 === "Done" ? "✅" : "(Pending)"}</p>` : "";
+        if (!item.Date) return; 
 
-        const cardHtml = `
+        // Sheet ki date ko parse karo
+        const itemDate = new Date(item.Date);
+        itemDate.setHours(0, 0, 0, 0);
+
+        // Content taiyar karo
+        const task1Html = item.T1 ? `<p><b>T1:</b> ${item.T1} ${item.S1 === "Done" ? "✅" : "⏳"}</p>` : "";
+        const task2Html = item.T2 ? `<p><b>T2:</b> ${item.T2} ${item.S2 === "Done" ? "✅" : "⏳"}</p>` : "";
+        const task3Html = item.T3 ? `<p><b>T3:</b> ${item.T3} ${item.S3 === "Done" ? "✅" : "⏳"}</p>` : "";
+
+        const cardContent = `
             <div class="card">
-                <h3>Target</h3>
+                <h4 style="color:#38bdf8; margin-bottom:10px;">📅 ${item.Date}</h4>
                 ${task1Html}
                 ${task2Html}
                 ${task3Html}
-                <p>Date: ${itemDate}</p>
             </div>
         `;
 
-        // Classification
-        if (itemDate === todayStr) {
-            todayList.innerHTML += cardHtml;
-        } else if (new Date(itemDate) > new Date()) {
-            upcoming.innerHTML += cardHtml;
+        // Classification Logic
+        if (itemDate.getTime() === today.getTime()) {
+            todayList.innerHTML += cardContent;
+        } else if (itemDate.getTime() > today.getTime()) {
+            upcoming.innerHTML += `<div class="date-card">${cardContent}</div>`;
         } else {
-            history.innerHTML += cardHtml;
+            history.innerHTML += `<div class="date-card">${cardContent}</div>`;
         }
     });
-}
 
+    // Empty state handling
+    if (todayList.innerHTML === "") todayList.innerHTML = "<p>No targets for today.</p>";
+    if (upcoming.innerHTML === "") upcoming.innerHTML = "<p>No upcoming targets.</p>";
+}
 // --- TIMER FUNCTIONS (Already Fixed) ---
 function startTimer() {
     if (startTimeGlobal) return;
