@@ -327,6 +327,34 @@ transform:translate(-50%,-50%);
 .date-card {
   scroll-snap-align: start;
 }
+
+
+ #statusBox {
+  position: fixed;
+  right: 20px;
+  top: 120px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+#statusDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: red;
+  box-shadow: 0 0 10px red;
+}
+
+/* Studying state */
+.studying {
+  background: #22c55e !important;
+  box-shadow: 0 0 12px #22c55e;
+}
+
+ 
 </style>
 </head>
 
@@ -402,7 +430,12 @@ Bhai JEE ne lanka laga diya hai 🙂‍↕️🙂‍↕️
 </a>
 </div>
 
+<div id="statusBox">
+  <span id="statusDot"></span>
+  <span id="statusText">Not Studying</span>
+</div>
 
+ 
  <div class="glass">
   <h2>Study Timer ⏱️</h2>
 
@@ -590,7 +623,9 @@ function startTimer() {
 
   startTimeGlobal = now;
   runTimer();
-
+ 
+  updateStatus();
+ 
   justStarted = true;
   setTimeout(() => {
     justStarted = false;
@@ -614,6 +649,8 @@ function stopTimer() {
   startTimeGlobal = null;
 
  localStorage.removeItem("startTime");
+
+ updateStatus();
 }
 // RESET
 function resetTimer() {
@@ -621,6 +658,8 @@ function resetTimer() {
   startTimeGlobal = null;
   document.getElementById("timerDisplay").innerText = "00:00:00";
  localStorage.removeItem("startTime");
+
+ updateStatus();
 }
 
 // AUTO LOAD
@@ -637,6 +676,9 @@ function runTimer() {
     const diff = now - startTimeGlobal;
 
     document.getElementById("timerDisplay").innerText = formatTime(diff);
+
+   updateStatus();
+   
   }, 1000);
 }
 
@@ -685,6 +727,20 @@ window.addEventListener("load", () => {
     }
   }, 5000);
 });
+
+ function updateStatus() {
+  const dot = document.getElementById("statusDot");
+  const text = document.getElementById("statusText");
+
+  if (startTimeGlobal) {
+    dot.classList.add("studying");
+    text.innerText = "Studying";
+  } else {
+    dot.classList.remove("studying");
+    text.innerText = "Not Studying";
+  }
+}
+ 
 </script>
 </body>
 </html>
