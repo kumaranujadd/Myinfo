@@ -577,6 +577,9 @@ function startTimer() {
   
   const now = new Date();
 
+  // 🔥 SAVE LOCAL
+  localStorage.setItem("startTime", now.toISOString());
+
   fetch(API_URL, {
     method: "POST",
     body: JSON.stringify({
@@ -591,9 +594,8 @@ function startTimer() {
   justStarted = true;
   setTimeout(() => {
     justStarted = false;
-  }, 5000); // 5 sec ignore
+  }, 5000);
 }
-
 // STOP
 function stopTimer() {
   const now = new Date();
@@ -610,12 +612,15 @@ function stopTimer() {
 
   // 🔥 ADD THIS LINE (MOST IMPORTANT)
   startTimeGlobal = null;
+
+ localStorage.removeItem("startTime");
 }
 // RESET
 function resetTimer() {
   clearInterval(timerInterval);
   startTimeGlobal = null;
   document.getElementById("timerDisplay").innerText = "00:00:00";
+ localStorage.removeItem("startTime");
 }
 
 // AUTO LOAD
@@ -666,13 +671,23 @@ function loadTimerFromServer() {
 
 // ✅ OUTSIDE function (IMPORTANT)
 window.addEventListener("load", () => {
+
+  // 🔥 LOCAL FIRST
+  const saved = localStorage.getItem("startTime");
+
+  if (saved) {
+    startTimeGlobal = new Date(saved);
+    runTimer();
+  }
+
+  // 🔥 THEN SERVER
   loadTimerFromServer();
 
- setInterval(() => {
-  if (!startTimeGlobal) {
-    loadTimerFromServer();
-  }
-}, 5000);
+  setInterval(() => {
+    if (!startTimeGlobal) {
+      loadTimerFromServer();
+    }
+  }, 5000);
 });
 </script>
 </body>
