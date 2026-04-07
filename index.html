@@ -447,44 +447,141 @@ Bhai JEE ne lanka laga diya hai 🙂‍↕️🙂‍↕️
 </div>
 
 <script>
+const API_URL = "https://script.google.com/macros/s/AKfycbwfyW14gXtjvRHP4J2kQfLZ7WlMxABHEVEkjPL9whxmYZISUmmmdYHM2Ckj0VSGkZ_7/exec";
+
+let timerInterval = null;
+let startTimeGlobal = null;
+let isManuallyStopped = false;
+
 window.addEventListener("load", () => {
-    // 1. Loader hatane ka logic
     const loader = document.getElementById("loader");
-    if (loader) {
-        loader.classList.add("hide-loader");
-    }
+    if (loader) loader.classList.add("hide-loader");
 
-    // 2. Targets load karne wala function call (Jo gayab ho gaye hain)
-    if (typeof fetchTargets === "function") {
-        fetchTargets(); 
-    }
-
-    // 3. Timer sync
+    // Targets aur Timer sync shuru karo
+    fetchTargets(); 
     loadTimerFromServer();
     setInterval(loadTimerFromServer, 15000);
+
+    // Local backup check
+    const saved = localStorage.getItem("startTime");
+    if (saved) {
+        startTimeGlobal = new Date(saved);
+        runTimer();
+    }
 });
 
-function loadTimerFromServer() {
-  // Agar timer chal raha hai ya abhi stop kiya hai, toh sync mat karo
-  if (isManuallyStopped || startTimeGlobal) return; 
+// --- TIMER FUNCTIONS ---
 
-  fetch(API_URL)
-    .then(res => res.json())
-    .then(data => {
-      if (!data || data.length === 0) return;
-      
-      const running = data.slice().reverse().find(row => 
-        (row.start || row.StartTime) && (!row.end && !row.EndTime)
-      );
-
-      if (running && !isManuallyStopped) {
-        const startStr = (running.date || running.Date).split("T")[0] + "T" + (running.start || running.StartTime);
-        startTimeGlobal = new Date(startStr);
-        runTimer();
-      }
-    }).catch(err => console.error("Sync error:", err));
+function formatTime(ms) {
+    let totalSeconds = Math.floor(ms / 1000);
+    let h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+    let m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+    let s = String(totalSeconds % 60).padStart(2, '0');
+    return `${h}:${m}:${s}`;
 }
- 
+
+function updateStatus() {
+    const dot = document.getElementById("statusDot");
+    const text = document.getElementById("statusText");
+    if (startTimeGlobal) {
+        dot.classList.add("studying");
+        text.innerText = "Studying";
+    } else {
+        dot.classList.remove("studying");
+        text.innerText = "Not Studying";
+    }
+}
+
+function startTimer() {
+    if (startTimeGlobal) return;
+    isManuallyStopped = false;
+    const now = new Date();
+    localStorage.setItem("startTime", now.toISOString());
+    startTimeGlobal = now;
+
+    fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+            date: now.toISOString().split("T")[0],
+            start: now.toTimeString().split(" ")[0]
+        })
+    });
+
+    runTimer();
+    updateStatus();
+}
+
+function stopTimer() {
+    isManuallyStopped = true; 
+    clearInterval(timerInterval);
+    
+    startTimeGlobal = null;
+    localStorage.removeItem("startTime");
+    document.getElementById("timerDisplay").innerText = "00:00:00";
+    updateStatus();
+
+    const now = new Date();
+    fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+            date: now.toISOString().split("T")[0],
+            end: now.toTimeString().split(" ")[0]
+        })
+    }).finally(() => {
+        setTimeout(() => { isManuallyStopped = false; }, 15000);
+    });
+}
+
+function resetTimer() {
+    isManuallyStopped = true;
+    clearInterval(timerInterval);
+    startTimeGlobal = null;
+    localStorage.removeItem("startTime");
+    document.getElementById("timerDisplay").innerText = "00:00:00";
+    updateStatus();
+    setTimeout(() => { isManuallyStopped = false; }, 5000);
+}
+
+function runTimer() {
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        if (!startTimeGlobal) return;
+        const now = new Date();
+        const diff = now - startTimeGlobal;
+        document.getElementById("timerDisplay").innerText = formatTime(diff);
+        updateStatus();
+    }, 1000);
+}
+
+function loadTimerFromServer() {
+    if (isManuallyStopped || startTimeGlobal) return; 
+
+    fetch(API_URL)
+        .then(res => res.json())
+        .then(data => {
+            if (!data || data.length === 0) return;
+            const running = data.slice().reverse().find(row => 
+                (row.start || row.StartTime) && (!row.end && !row.EndTime)
+            );
+            if (running && !isManuallyStopped) {
+                const startStr = (running.date || running.Date).split("T")[0] + "T" + (running.start || running.StartTime);
+                startTimeGlobal = new Date(startStr);
+                runTimer();
+            }
+        }).catch(err => console.error("Sync error:", err));
+}
+
+// --- TARGETS LOADING FUNCTION (Gayab Targets Wapas Lane Ke Liye) ---
+
+function fetchTargets() {
+    fetch(API_URL)
+        .then(res => res.json())
+        .then(data => {
+            // Yahan apna targets render karne ka pura logic daal dena 
+            // jo pehle targets dikhata tha.
+            console.log("Targets loaded:", data);
+        });
+}
 </script>
 </body>
 </html>
