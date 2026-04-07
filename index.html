@@ -457,12 +457,11 @@ window.addEventListener("load", () => {
     const loader = document.getElementById("loader");
     if (loader) loader.classList.add("hide-loader");
 
-    // Targets aur Timer sync shuru karo
+    // Sab kuch shuru karo
     fetchTargets(); 
     loadTimerFromServer();
     setInterval(loadTimerFromServer, 15000);
 
-    // Local backup check
     const saved = localStorage.getItem("startTime");
     if (saved) {
         startTimeGlobal = new Date(saved);
@@ -470,35 +469,58 @@ window.addEventListener("load", () => {
     }
 });
 
-// --- TIMER FUNCTIONS ---
-
-function formatTime(ms) {
-    let totalSeconds = Math.floor(ms / 1000);
-    let h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-    let m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-    let s = String(totalSeconds % 60).padStart(2, '0');
-    return `${h}:${m}:${s}`;
+// --- TARGETS LOADING LOGIC (Jo gayab ho gaya tha) ---
+function fetchTargets() {
+    fetch(API_URL)
+        .then(res => res.json())
+        .then(data => {
+            if (!data || data.length === 0) return;
+            renderTargets(data);
+        })
+        .catch(err => console.error("Target Error:", err));
 }
 
-function updateStatus() {
-    const dot = document.getElementById("statusDot");
-    const text = document.getElementById("statusText");
-    if (startTimeGlobal) {
-        dot.classList.add("studying");
-        text.innerText = "Studying";
-    } else {
-        dot.classList.remove("studying");
-        text.innerText = "Not Studying";
-    }
+function renderTargets(data) {
+    const todayList = document.getElementById("todayList");
+    const upcoming = document.getElementById("upcoming");
+    const history = document.getElementById("history");
+    
+    if(!todayList) return; // Safety check
+
+    todayList.innerHTML = ""; 
+    upcoming.innerHTML = "";
+    history.innerHTML = "";
+
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    data.forEach(item => {
+        const itemDate = item.date || item.Date;
+        const taskHtml = `
+            <div class="card">
+                <h3>${item.task || item.Task || "No Task"}</h3>
+                <p>${itemDate}</p>
+                <span class="btn">${item.status || "Pending"}</span>
+            </div>
+        `;
+
+        if (itemDate === todayStr) {
+            todayList.innerHTML += taskHtml;
+        } else if (new Date(itemDate) > new Date()) {
+            upcoming.innerHTML += `<div class="date-card">${taskHtml}</div>`;
+        } else {
+            history.innerHTML += `<div class="date-card">${taskHtml}</div>`;
+        }
+    });
 }
 
+// --- TIMER FUNCTIONS (Already Fixed) ---
 function startTimer() {
     if (startTimeGlobal) return;
     isManuallyStopped = false;
     const now = new Date();
     localStorage.setItem("startTime", now.toISOString());
     startTimeGlobal = now;
-
+    
     fetch(API_URL, {
         method: "POST",
         body: JSON.stringify({
@@ -506,7 +528,6 @@ function startTimer() {
             start: now.toTimeString().split(" ")[0]
         })
     });
-
     runTimer();
     updateStatus();
 }
@@ -514,7 +535,6 @@ function startTimer() {
 function stopTimer() {
     isManuallyStopped = true; 
     clearInterval(timerInterval);
-    
     startTimeGlobal = null;
     localStorage.removeItem("startTime");
     document.getElementById("timerDisplay").innerText = "00:00:00";
@@ -553,9 +573,28 @@ function runTimer() {
     }, 1000);
 }
 
+function formatTime(ms) {
+    let totalSeconds = Math.floor(ms / 1000);
+    let h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+    let m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+    let s = String(totalSeconds % 60).padStart(2, '0');
+    return `${h}:${m}:${s}`;
+}
+
+function updateStatus() {
+    const dot = document.getElementById("statusDot");
+    const text = document.getElementById("statusText");
+    if (startTimeGlobal) {
+        dot.classList.add("studying");
+        text.innerText = "Studying";
+    } else {
+        dot.classList.remove("studying");
+        text.innerText = "Not Studying";
+    }
+}
+
 function loadTimerFromServer() {
     if (isManuallyStopped || startTimeGlobal) return; 
-
     fetch(API_URL)
         .then(res => res.json())
         .then(data => {
@@ -568,20 +607,12 @@ function loadTimerFromServer() {
                 startTimeGlobal = new Date(startStr);
                 runTimer();
             }
-        }).catch(err => console.error("Sync error:", err));
-}
-
-// --- TARGETS LOADING FUNCTION (Gayab Targets Wapas Lane Ke Liye) ---
-
-function fetchTargets() {
-    fetch(API_URL)
-        .then(res => res.json())
-        .then(data => {
-            // Yahan apna targets render karne ka pura logic daal dena 
-            // jo pehle targets dikhata tha.
-            console.log("Targets loaded:", data);
         });
 }
+
+// Scroll Functions
+function scrollLeftFunc(id) { document.getElementById(id).scrollBy({ left: -250, behavior: 'smooth' }); }
+function scrollRightFunc(id) { document.getElementById(id).scrollBy({ left: 250, behavior: 'smooth' }); }
 </script>
 </body>
 </html>
