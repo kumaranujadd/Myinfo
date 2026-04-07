@@ -485,7 +485,7 @@ function renderTargets(data) {
     const upcoming = document.getElementById("upcoming");
     const history = document.getElementById("history");
     
-    if(!todayList) return; // Safety check
+    if(!todayList) return; 
 
     todayList.innerHTML = ""; 
     upcoming.innerHTML = "";
@@ -494,21 +494,32 @@ function renderTargets(data) {
     const todayStr = new Date().toISOString().split('T')[0];
 
     data.forEach(item => {
-        const itemDate = item.date || item.Date;
-        const taskHtml = `
+        // Headers match karo: Date aur Task names (T1, T2, T3)
+        const itemDate = item.Date; 
+        
+        // Task display ke liye text taiyar karo (Physics Class, Math Class, etc.)
+        // Status display (Done, Pending) - Done hai toh checkmark.
+        const task1Html = item.T1 ? `<p>${item.T1} ${item.S1 === "Done" ? "✅" : "(Pending)"}</p>` : "";
+        const task2Html = item.T2 ? `<p>${item.T2} ${item.S2 === "Done" ? "✅" : "(Pending)"}</p>` : "";
+        const task3Html = item.T3 ? `<p>${item.T3} ${item.S3 === "Done" ? "✅" : "(Pending)"}</p>` : "";
+
+        const cardHtml = `
             <div class="card">
-                <h3>${item.task || item.Task || "No Task"}</h3>
-                <p>${itemDate}</p>
-                <span class="btn">${item.status || "Pending"}</span>
+                <h3>Target</h3>
+                ${task1Html}
+                ${task2Html}
+                ${task3Html}
+                <p>Date: ${itemDate}</p>
             </div>
         `;
 
+        // Classification
         if (itemDate === todayStr) {
-            todayList.innerHTML += taskHtml;
+            todayList.innerHTML += cardHtml;
         } else if (new Date(itemDate) > new Date()) {
-            upcoming.innerHTML += `<div class="date-card">${taskHtml}</div>`;
+            upcoming.innerHTML += cardHtml;
         } else {
-            history.innerHTML += `<div class="date-card">${taskHtml}</div>`;
+            history.innerHTML += cardHtml;
         }
     });
 }
