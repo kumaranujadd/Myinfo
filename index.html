@@ -451,150 +451,27 @@ window.addEventListener("load", () => {
   setTimeout(() => {
     document.getElementById("loader").classList.add("hide-loader");
   }, 1000);
+
+  // LOCAL BACKUP
+  const saved = localStorage.getItem("startTime");
+  if (saved) {
+    startTimeGlobal = new Date(saved);
+    runTimer();
+  }
+
+  // SERVER SYNC
+  loadTimerFromServer();
+  setInterval(loadTimerFromServer, 5000);
 });
 
-fetch("https://opensheet.elk.sh/1A1In9joYUNj8kTljvEZ7DyZcGt7RsBsiMUcPi_LEbLA/Sheet1")
-  .then(res => res.json())
-  .then(data => {
-
-    const todayDiv = document.getElementById("todayList");
-    const upcomingDiv = document.getElementById("upcoming");
-    const historyDiv = document.getElementById("history");
-
-    todayDiv.innerHTML = "";
-    upcomingDiv.innerHTML = "";
-    historyDiv.innerHTML = "";
-
-    const todayDate = new Date().toISOString().split("T")[0];
-
-    const upcomingGrouped = {};
-    const historyGrouped = {};
-
-    data.forEach(row => {
-
-      const tasks = [
-        { task: row.T1, status: row.S1 },
-        { task: row.T2, status: row.S2 },
-        { task: row.T3, status: row.S3 }
-      ];
-
-      tasks.forEach(item => {
-        if (!item.task) return;
-
-        const isDone = item.status === "Done";
-
-        // ✅ TODAY
-        if (row.Date === todayDate) {
-
-          const div = document.createElement("div");
-          div.className = "card";
-
-          div.innerHTML = `
-            <span style="${isDone ? 'text-decoration: line-through; opacity:0.6;' : ''}">
-              ${item.task}
-            </span>
-          `;
-
-          todayDiv.appendChild(div);
-        }
-
-        // ✅ UPCOMING
-        else if (row.Date > todayDate) {
-          if (!upcomingGrouped[row.Date]) {
-            upcomingGrouped[row.Date] = [];
-          }
-          upcomingGrouped[row.Date].push(item);
-        }
-
-        // ✅ PREVIOUS
-        else if (row.Date < todayDate) {
-          if (!historyGrouped[row.Date]) {
-            historyGrouped[row.Date] = [];
-          }
-          historyGrouped[row.Date].push(item);
-        }
-
-      });
-
-    });
-
-    // 🔥 UPCOMING CARDS
-    Object.keys(upcomingGrouped).sort().forEach(date => {
-
-      const card = document.createElement("div");
-      card.className = "date-card";
-
-      const formattedDate = new Date(date).toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short"
-      });
-
-      let html = "";
-
-      upcomingGrouped[date].forEach(item => {
-        const isDone = item.status === "Done";
-
-        html += `
-          <div style="${isDone ? 'text-decoration: line-through; opacity:0.6;' : ''}">
-            ${item.task}
-          </div>
-        `;
-      });
-
-      card.innerHTML = `<h3>${formattedDate}</h3>${html}`;
-      upcomingDiv.appendChild(card);
-    });
-
-    // 🔥 PREVIOUS CARDS (REVERSE ORDER - LATEST FIRST)
-    Object.keys(historyGrouped).sort().reverse().forEach(date => {
-
-      const card = document.createElement("div");
-      card.className = "date-card";
-
-      const formattedDate = new Date(date).toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short"
-      });
-
-      let html = "";
-
-      historyGrouped[date].forEach(item => {
-        const isDone = item.status === "Done";
-
-        html += `
-          <div style="${isDone ? 'text-decoration: line-through; opacity:0.6;' : ''}">
-            ${item.task}
-          </div>
-        `;
-      });
-
-      card.innerHTML = `<h3>${formattedDate}</h3>${html}`;
-      historyDiv.appendChild(card);
-    });
-
-  });
-
- function scrollLeftFunc(id) {
-  document.getElementById(id).scrollBy({
-    left: -250,
-    behavior: "smooth"
-  });
-}
-
-function scrollRightFunc(id) {
-  document.getElementById(id).scrollBy({
-    left: 250,
-    behavior: "smooth"
-  });
-}
+// ... (keep your fetch for "Today Target" logic here) ...
 
 const API_URL = "https://script.google.com/macros/s/AKfycbwfyW14gXtjvRHP4J2kQfLZ7WlMxABHEVEkjPL9whxmYZISUmmmdYHM2Ckj0VSGkZ_7/exec";
 
 let timerInterval = null;
 let startTimeGlobal = null;
-let isManuallyStopped = false; // <--- Ye humne naya add kiya taaki status sahi rahe
+let isManuallyStopped = false;
 
-// format time
 function formatTime(ms) {
   let totalSeconds = Math.floor(ms / 1000);
   let h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
@@ -602,14 +479,22 @@ function formatTime(ms) {
   let s = String(totalSeconds % 60).padStart(2, '0');
   return `${h}:${m}:${s}`;
 }
- 
- let justStarted = false;
+
+function updateStatus() {
+  const dot = document.getElementById("statusDot");
+  const text = document.getElementById("statusText");
+  if (startTimeGlobal) {
+    dot.classList.add("studying");
+    text.innerText = "Studying";
+  } else {
+    dot.classList.remove("studying");
+    text.innerText = "Not Studying";
+  }
+}
+
 function startTimer() {
   if (startTimeGlobal) return;
-  
   const now = new Date();
-
-  // 🔥 SAVE LOCAL
   localStorage.setItem("startTime", now.toISOString());
 
   fetch(API_URL, {
@@ -622,25 +507,13 @@ function startTimer() {
 
   startTimeGlobal = now;
   runTimer();
- 
   updateStatus();
- 
-  justStarted = true;
-  setTimeout(() => {
-    justStarted = false;
-  }, 5000);
 }
 
- 
-// STOP
 function stopTimer() {
-  isManuallyStopped = true; // Lock status
+  isManuallyStopped = true;
   clearInterval(timerInterval);
-  startTimeGlobal = null; // Turant null karo taaki sync na ho
-  localStorage.removeItem("startTime");
-  document.getElementById("timerDisplay").innerText = "00:00:00";
-  updateStatus(); 
-
+  
   const now = new Date();
   fetch(API_URL, {
     method: "POST",
@@ -649,115 +522,51 @@ function stopTimer() {
       end: now.toTimeString().split(" ")[0]
     })
   }).finally(() => {
-    // 10 second wait karein taaki Sheet fully update ho jaye
-    setTimeout(() => { 
-      isManuallyStopped = false; 
-    }, 10000);
+    setTimeout(() => { isManuallyStopped = false; }, 10000);
   });
+
+  startTimeGlobal = null;
+  localStorage.removeItem("startTime");
+  document.getElementById("timerDisplay").innerText = "00:00:00";
+  updateStatus();
 }
 
+function resetTimer() {
   clearInterval(timerInterval);
   startTimeGlobal = null;
   localStorage.removeItem("startTime");
   document.getElementById("timerDisplay").innerText = "00:00:00";
-  
-  updateStatus(); // Immediately shows "Not Studying"
+  updateStatus();
 }
-
- 
-// RESET
-function resetTimer() {
-  clearInterval(timerInterval);
-  startTimeGlobal = null;
-  document.getElementById("timerDisplay").innerText = "00:00:00";
- localStorage.removeItem("startTime");
-
- updateStatus();
-}
-
-// AUTO LOAD
 
 function runTimer() {
   clearInterval(timerInterval);
-
   timerInterval = setInterval(() => {
     if (!startTimeGlobal) return;
-
     const now = new Date();
     const diff = now - startTimeGlobal;
-
     document.getElementById("timerDisplay").innerText = formatTime(diff);
-
-   updateStatus();
-   
+    updateStatus();
   }, 1000);
 }
 
 function loadTimerFromServer() {
-  // Agar humne abhi STOP kiya hai, toh server check ko skip karo
-  if (isManuallyStopped) return; 
-
+  if (isManuallyStopped) return;
   fetch(API_URL)
     .then(res => res.json())
     .then(data => {
       if (!data || data.length === 0) return;
-
       const running = data.slice().reverse().find(row => 
         (row.start || row.StartTime) && (!row.end && !row.EndTime)
       );
-
       if (running) {
         const startStr = (running.date || running.Date).split("T")[0] + "T" + (running.start || running.StartTime);
-        const start = new Date(startStr);
-
-        // Sirf tabhi sync karo jab local timer pehle se na chal raha ho
         if (!startTimeGlobal) {
-          startTimeGlobal = start;
+          startTimeGlobal = new Date(startStr);
           runTimer();
         }
-        updateStatus();
-      } else {
-        // Agar server pe session khatam hai aur local storage bhi khali hai
-        if (!localStorage.getItem("startTime")) {
-          startTimeGlobal = null;
-          clearInterval(timerInterval);
-          updateStatus();
-        }
       }
-    });
-}
- 
-
-window.addEventListener("load", () => {
-
-  // LOCAL BACKUP
-  const saved = localStorage.getItem("startTime");
-
-  if (saved) {
-    startTimeGlobal = new Date(saved);
-    runTimer();
-  }
-
-  // SERVER SYNC
-  loadTimerFromServer();
-
-  // 🔥 ALWAYS CHECK SERVER
-  setInterval(() => {
-    loadTimerFromServer();
-  }, 5000);
-});
-
-function updateStatus() {
-  const dot = document.getElementById("statusDot");
-  const text = document.getElementById("statusText");
-
-  if (startTimeGlobal) {
-    dot.classList.add("studying");
-    text.innerText = "Studying";
-  } else {
-    dot.classList.remove("studying");
-    text.innerText = "Not Studying";
-  }
+    }).catch(err => console.log("Sync error:", err));
 }
  
 </script>
