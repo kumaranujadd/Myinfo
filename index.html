@@ -686,33 +686,35 @@ function loadTimerFromServer() {
   fetch(API_URL)
     .then(res => res.json())
     .then(data => {
-      console.log(data);
 
       if (data.length === 0) return;
 
       const running = data.reverse().find(row => row.start && (row.end === "" || !row.end));
 
-     if (running) {
-  const start = new Date((running.date || running.Date) + "T" + (running.start || running.StartTime));
+      if (running) {
+        const start = new Date((running.date || running.Date) + "T" + (running.start || running.StartTime));
 
-  if (!startTimeGlobal) {
-    startTimeGlobal = start;
-    runTimer();
-  }
+        // 🔥 Only update if different
+        if (!startTimeGlobal || Math.abs(startTimeGlobal - start) > 2000) {
+          startTimeGlobal = start;
+          runTimer();
+        }
 
-  updateStatus(); // ✅ ADD THIS
+        updateStatus();
 
-} else {
-  startTimeGlobal = null;
-  updateStatus(); // ✅ ADD THIS
-}
+      } else {
+        // ❌ DO NOT STOP running timer from server blindly
+        if (!startTimeGlobal) {
+          updateStatus();
+        }
+      }
+
     });
 }
 
-// ✅ OUTSIDE function (IMPORTANT)
 window.addEventListener("load", () => {
 
-  // 🔥 LOCAL FIRST
+  // LOCAL BACKUP
   const saved = localStorage.getItem("startTime");
 
   if (saved) {
@@ -720,11 +722,12 @@ window.addEventListener("load", () => {
     runTimer();
   }
 
-  // 🔥 THEN SERVER
+  // SERVER SYNC
   loadTimerFromServer();
 
+  // 🔥 ALWAYS CHECK SERVER
   setInterval(() => {
-      loadTimerFromServer();
+    loadTimerFromServer();
   }, 5000);
 });
 
