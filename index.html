@@ -511,9 +511,15 @@ function startTimer() {
 }
 
 function stopTimer() {
-  isManuallyStopped = true;
+  isManuallyStopped = true; // Sync lock on
   clearInterval(timerInterval);
   
+  // Turant UI update karo taaki lag na dikhe
+  startTimeGlobal = null;
+  localStorage.removeItem("startTime");
+  document.getElementById("timerDisplay").innerText = "00:00:00";
+  updateStatus();
+
   const now = new Date();
   fetch(API_URL, {
     method: "POST",
@@ -522,9 +528,12 @@ function stopTimer() {
       end: now.toTimeString().split(" ")[0]
     })
   }).finally(() => {
-    setTimeout(() => { isManuallyStopped = false; }, 10000);
+    // 15 second ka buffer do taaki Google Sheet update ho jaye
+    setTimeout(() => { 
+      isManuallyStopped = false; 
+    }, 15000);
   });
-
+}
   startTimeGlobal = null;
   localStorage.removeItem("startTime");
   document.getElementById("timerDisplay").innerText = "00:00:00";
@@ -532,11 +541,15 @@ function stopTimer() {
 }
 
 function resetTimer() {
+  isManuallyStopped = true; // Block sync
   clearInterval(timerInterval);
   startTimeGlobal = null;
   localStorage.removeItem("startTime");
   document.getElementById("timerDisplay").innerText = "00:00:00";
   updateStatus();
+  
+  // 5 second baad sync firse allow karein
+  setTimeout(() => { isManuallyStopped = false; }, 5000);
 }
 
 function runTimer() {
@@ -551,20 +564,21 @@ function runTimer() {
 }
 
 function loadTimerFromServer() {
-  if (isManuallyStopped) return;
+  if (isManuallyStopped || startTimeGlobal) return; // Agar timer chal raha hai ya abhi stop kiya hai, toh sync mat karo
+
   fetch(API_URL)
     .then(res => res.json())
     .then(data => {
       if (!data || data.length === 0) return;
+      
       const running = data.slice().reverse().find(row => 
         (row.start || row.StartTime) && (!row.end && !row.EndTime)
       );
-      if (running) {
+
+      if (running && !isManuallyStopped) {
         const startStr = (running.date || running.Date).split("T")[0] + "T" + (running.start || running.StartTime);
-        if (!startTimeGlobal) {
-          startTimeGlobal = new Date(startStr);
-          runTimer();
-        }
+        startTimeGlobal = new Date(startStr);
+        runTimer();
       }
     }).catch(err => console.log("Sync error:", err));
 }
