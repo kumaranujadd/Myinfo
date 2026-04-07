@@ -659,13 +659,9 @@ function loadTimerFromServer() {
         }
 
       } else {
-        if (justStarted) return;
-
-        clearInterval(timerInterval);
-        startTimeGlobal = null;
-
-        document.getElementById("timerDisplay").innerText = "00:00:00";
-      }
+  // do nothing
+  return;
+}
     });
 }
 
