@@ -588,9 +588,11 @@ function scrollRightFunc(id) {
   });
 }
 
- const API_URL = "https://script.google.com/macros/s/AKfycbwfyW14gXtjvRHP4J2kQfLZ7WlMxABHEVEkjPL9whxmYZISUmmmdYHM2Ckj0VSGkZ_7/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwfyW14gXtjvRHP4J2kQfLZ7WlMxABHEVEkjPL9whxmYZISUmmmdYHM2Ckj0VSGkZ_7/exec";
 
 let timerInterval = null;
+let startTimeGlobal = null;
+let isManuallyStopped = false; // <--- Ye humne naya add kiya taaki status sahi rahe
 
 // format time
 function formatTime(ms) {
@@ -600,10 +602,7 @@ function formatTime(ms) {
   let s = String(totalSeconds % 60).padStart(2, '0');
   return `${h}:${m}:${s}`;
 }
-
-
-// START
-
+ 
  let justStarted = false;
 function startTimer() {
   if (startTimeGlobal) return;
@@ -631,8 +630,11 @@ function startTimer() {
     justStarted = false;
   }, 5000);
 }
+
+ 
 // STOP
 function stopTimer() {
+  isManuallyStopped = true; // Lock status so it stays "Not Studying"
   const now = new Date();
 
   fetch(API_URL, {
@@ -641,17 +643,22 @@ function stopTimer() {
       date: now.toISOString().split("T")[0],
       end: now.toTimeString().split(" ")[0]
     })
+  }).finally(() => {
+    // 8 seconds wait for Google Sheets to update
+    setTimeout(() => { 
+      isManuallyStopped = false; 
+    }, 8000);
   });
 
   clearInterval(timerInterval);
-
-  // 🔥 ADD THIS LINE (MOST IMPORTANT)
   startTimeGlobal = null;
-
- localStorage.removeItem("startTime");
-
- updateStatus();
+  localStorage.removeItem("startTime");
+  document.getElementById("timerDisplay").innerText = "00:00:00";
+  
+  updateStatus(); // Immediately shows "Not Studying"
 }
+
+ 
 // RESET
 function resetTimer() {
   clearInterval(timerInterval);
@@ -683,32 +690,37 @@ function runTimer() {
 }
 
 function loadTimerFromServer() {
+  // 🛑 Agar humne abhi STOP kiya hai, toh server check ko skip karo
+  if (isManuallyStopped) return; 
+
   fetch(API_URL)
     .then(res => res.json())
     .then(data => {
+      if (!data || data.length === 0) return;
 
-      if (data.length === 0) return;
-
-      const running = data.reverse().find(row => row.start && (row.end === "" || !row.end));
+      // Check karo ki kya koi row aisi hai jisme START hai par END khali hai
+      const running = data.slice().reverse().find(row => 
+        (row.start || row.StartTime) && (!row.end && !row.EndTime)
+      );
 
       if (running) {
-        const start = new Date((running.date || running.Date) + "T" + (running.start || running.StartTime));
+        const startStr = (running.date || running.Date).split("T")[0] + "T" + (running.start || running.StartTime);
+        const start = new Date(startStr);
 
-        // 🔥 Only update if different
-        if (!startTimeGlobal || Math.abs(startTimeGlobal - start) > 2000) {
+        // Sirf tabhi sync karo jab local timer pehle se na chal raha ho
+        if (!startTimeGlobal) {
           startTimeGlobal = start;
           runTimer();
         }
-
         updateStatus();
-
       } else {
-        // ❌ DO NOT STOP running timer from server blindly
-        if (!startTimeGlobal) {
+        // Agar server pe session khatam ho chuka hai aur local storage bhi khali hai
+        if (!localStorage.getItem("startTime")) {
+          startTimeGlobal = null;
+          clearInterval(timerInterval);
           updateStatus();
         }
       }
-
     });
 }
 
