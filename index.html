@@ -634,9 +634,14 @@ function startTimer() {
  
 // STOP
 function stopTimer() {
-  isManuallyStopped = true; // Lock status so it stays "Not Studying"
-  const now = new Date();
+  isManuallyStopped = true; // Lock status
+  clearInterval(timerInterval);
+  startTimeGlobal = null; // 🟢 Turant null karo taaki sync na ho
+  localStorage.removeItem("startTime");
+  document.getElementById("timerDisplay").innerText = "00:00:00";
+  updateStatus(); 
 
+  const now = new Date();
   fetch(API_URL, {
     method: "POST",
     body: JSON.stringify({
@@ -644,11 +649,12 @@ function stopTimer() {
       end: now.toTimeString().split(" ")[0]
     })
   }).finally(() => {
-    // 8 seconds wait for Google Sheets to update
+    // 10 second wait karein taaki Sheet fully update ho jaye
     setTimeout(() => { 
       isManuallyStopped = false; 
-    }, 8000);
+    }, 10000);
   });
+}
 
   clearInterval(timerInterval);
   startTimeGlobal = null;
@@ -688,7 +694,7 @@ function runTimer() {
 }
 
 function loadTimerFromServer() {
-  // 🛑 Agar humne abhi STOP kiya hai, toh server check ko skip karo
+  // Agar humne abhi STOP kiya hai, toh server check ko skip karo
   if (isManuallyStopped) return; 
 
   fetch(API_URL)
@@ -696,7 +702,6 @@ function loadTimerFromServer() {
     .then(data => {
       if (!data || data.length === 0) return;
 
-      // Check karo ki kya koi row aisi hai jisme START hai par END khali hai
       const running = data.slice().reverse().find(row => 
         (row.start || row.StartTime) && (!row.end && !row.EndTime)
       );
@@ -712,7 +717,7 @@ function loadTimerFromServer() {
         }
         updateStatus();
       } else {
-        // Agar server pe session khatam ho chuka hai aur local storage bhi khali hai
+        // Agar server pe session khatam hai aur local storage bhi khali hai
         if (!localStorage.getItem("startTime")) {
           startTimeGlobal = null;
           clearInterval(timerInterval);
@@ -721,6 +726,7 @@ function loadTimerFromServer() {
       }
     });
 }
+ 
 
 window.addEventListener("load", () => {
 
