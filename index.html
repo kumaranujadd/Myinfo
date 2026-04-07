@@ -692,17 +692,19 @@ function loadTimerFromServer() {
 
       const running = data.reverse().find(row => row.start && (row.end === "" || !row.end));
 
-      if (running) {
-        const start = new Date((running.date || running.Date) + "T" + (running.start || running.StartTime));
+     if (running) {
+  const start = new Date((running.date || running.Date) + "T" + (running.start || running.StartTime));
 
-       if (!startTimeGlobal) {
-          startTimeGlobal = start;
-          runTimer();
-        }
+  if (!startTimeGlobal) {
+    startTimeGlobal = start;
+    runTimer();
+  }
 
-      } else {
-  // do nothing
-  return;
+  updateStatus(); // ✅ ADD THIS
+
+} else {
+  startTimeGlobal = null;
+  updateStatus(); // ✅ ADD THIS
 }
     });
 }
@@ -728,7 +730,7 @@ window.addEventListener("load", () => {
   }, 5000);
 });
 
- function updateStatus() {
+function updateStatus() {
   const dot = document.getElementById("statusDot");
   const text = document.getElementById("statusText");
 
