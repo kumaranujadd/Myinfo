@@ -648,7 +648,7 @@ function loadTimerFromServer() {
       if (running) {
         const start = new Date((running.date || running.Date) + "T" + (running.start || running.StartTime));
 
-        if (!startTimeGlobal || startTimeGlobal.getTime() !== start.getTime()) {
+       if (!startTimeGlobal) {
           startTimeGlobal = start;
           runTimer();
         }
@@ -668,9 +668,11 @@ function loadTimerFromServer() {
 window.addEventListener("load", () => {
   loadTimerFromServer();
 
-  setInterval(() => {
+ setInterval(() => {
+  if (!startTimeGlobal) {
     loadTimerFromServer();
-  }, 3000);
+  }
+}, 5000);
 });
 </script>
 </body>
