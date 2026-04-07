@@ -639,39 +639,39 @@ function loadTimerFromServer() {
   fetch(API_URL)
     .then(res => res.json())
     .then(data => {
-     console.log(data);
+      console.log(data);
 
       if (data.length === 0) return;
 
-    const running = data.reverse().find(row => row.start && (row.end === "" || !row.end));
-if (running) {
-const start = new Date((running.date || running.Date) + "T" + (running.start || running.StartTime));
+      const running = data.reverse().find(row => row.start && (row.end === "" || !row.end));
 
-   // 🔥 only update if different
-if (!startTimeGlobal || startTimeGlobal.getTime() !== start.getTime()) {
-  startTimeGlobal = start;
-  runTimer();
+      if (running) {
+        const start = new Date((running.date || running.Date) + "T" + (running.start || running.StartTime));
+
+        if (!startTimeGlobal || startTimeGlobal.getTime() !== start.getTime()) {
+          startTimeGlobal = start;
+          runTimer();
+        }
+
+      } else {
+        if (justStarted) return;
+
+        clearInterval(timerInterval);
+        startTimeGlobal = null;
+
+        document.getElementById("timerDisplay").innerText = "00:00:00";
+      }
+    });
 }
- 
-} else {
-  if (justStarted) return; // 🔥 ignore for few seconds
 
-  clearInterval(timerInterval);
-  startTimeGlobal = null;
-
-  document.getElementById("timerDisplay").innerText = "00:00:00";
-}
-
-// FINAL LOAD
+// ✅ OUTSIDE function (IMPORTANT)
 window.addEventListener("load", () => {
   loadTimerFromServer();
 
-  // 🔥 auto sync every 3 sec
   setInterval(() => {
     loadTimerFromServer();
   }, 3000);
 });
-}
 </script>
 </body>
 </html>
