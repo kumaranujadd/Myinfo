@@ -514,7 +514,8 @@ function stopTimer() {
   isManuallyStopped = true; // Sync lock on
   clearInterval(timerInterval);
   
-  // Turant UI update karo taaki lag na dikhe
+  // Turant UI update taaki lag na dikhe
+  let finalTime = startTimeGlobal; 
   startTimeGlobal = null;
   localStorage.removeItem("startTime");
   document.getElementById("timerDisplay").innerText = "00:00:00";
@@ -528,12 +529,12 @@ function stopTimer() {
       end: now.toTimeString().split(" ")[0]
     })
   }).finally(() => {
-    // 15 second ka buffer do taaki Google Sheet update ho jaye
+    // Lock ko 15 sec tak rakho jab tak Sheet update na ho jaye
     setTimeout(() => { 
       isManuallyStopped = false; 
     }, 15000);
   });
-}
+} // <--- Sirf ek bracket yahan hona chahiye
   startTimeGlobal = null;
   localStorage.removeItem("startTime");
   document.getElementById("timerDisplay").innerText = "00:00:00";
