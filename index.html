@@ -491,18 +491,26 @@ function renderTargets(data) {
     upcoming.innerHTML = "";
     history.innerHTML = "";
 
-    // Aaj ki date set karo (Midnight tak reset karke accurate comparison ke liye)
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     data.forEach(item => {
-        if (!item.Date) return; 
+        if (!item.Date) return;
 
-        // Sheet ki date ko parse karo
-        const itemDate = new Date(item.Date);
+        // Date Parsing (DD/MM/YYYY ko handle karne ke liye)
+        let d = item.Date;
+        let itemDate;
+        
+        if (typeof d === "string" && d.includes("/")) {
+            const parts = d.split("/");
+            // parts[0]=DD, parts[1]=MM, parts[2]=YYYY
+            itemDate = new Date(parts[2], parts[1] - 1, parts[0]);
+        } else {
+            itemDate = new Date(d);
+        }
+        
         itemDate.setHours(0, 0, 0, 0);
 
-        // Content taiyar karo
         const task1Html = item.T1 ? `<p><b>T1:</b> ${item.T1} ${item.S1 === "Done" ? "✅" : "⏳"}</p>` : "";
         const task2Html = item.T2 ? `<p><b>T2:</b> ${item.T2} ${item.S2 === "Done" ? "✅" : "⏳"}</p>` : "";
         const task3Html = item.T3 ? `<p><b>T3:</b> ${item.T3} ${item.S3 === "Done" ? "✅" : "⏳"}</p>` : "";
@@ -516,19 +524,17 @@ function renderTargets(data) {
             </div>
         `;
 
-        // Classification Logic
+        // Accurate Comparison
         if (itemDate.getTime() === today.getTime()) {
             todayList.innerHTML += cardContent;
         } else if (itemDate.getTime() > today.getTime()) {
             upcoming.innerHTML += `<div class="date-card">${cardContent}</div>`;
-        } else {
+        } else if (itemDate.getTime() < today.getTime()) {
             history.innerHTML += `<div class="date-card">${cardContent}</div>`;
         }
     });
 
-    // Empty state handling
     if (todayList.innerHTML === "") todayList.innerHTML = "<p>No targets for today.</p>";
-    if (upcoming.innerHTML === "") upcoming.innerHTML = "<p>No upcoming targets.</p>";
 }
 // --- TIMER FUNCTIONS (Already Fixed) ---
 function startTimer() {
