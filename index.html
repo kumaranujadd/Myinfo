@@ -1,61 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Anuj | JEE</title>
 
 <style>
- .icon-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-   .floating-social {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.float-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  background: #0088cc;
-  overflow: hidden;
-}
-
-.float-btn i {
-  font-size: 22px;
-  color: white;
-}
-
-/* X button */
-.float-btn.x {
-  background: black;
-}
 body{
 margin:0;
-font-family: system-ui, -apple-system, "Segoe UI", "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif;
+font-family:system-ui;
 background:#020617;
 color:white;
-overflow-x:hidden;
-scroll-behavior:smooth;
+text-align:center;
 }
 
- body {
-  font-family: system-ui, -apple-system, "Segoe UI", "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", sans-serif;
-}
-
- 
-/* ===== LOADING SCREEN ===== */
 #loader{
 position:fixed;
 width:100%;
@@ -64,386 +22,70 @@ background:#020617;
 display:flex;
 justify-content:center;
 align-items:center;
-flex-direction:column;
 z-index:9999;
-transition:opacity .8s ease, visibility .8s;
 }
 
-.loader-ring{
-width:70px;
-height:70px;
-border-radius:50%;
-border:4px solid #1e293b;
-border-top:4px solid #38bdf8;
-animation:spin 1s linear infinite;
-margin-bottom:20px;
-}
-@keyframes spin{
-to{transform:rotate(360deg);}
-}
+.hide-loader{display:none;}
 
-.hide-loader{
-opacity:0;
-visibility:hidden;
-}
-
-/* ===== Neon Background ===== */
-.neon{
-position:fixed;
-width:200px;
-height:200px;
-background:radial-gradient(circle,#38bdf8,transparent);
-filter:blur(80px);
-opacity:.25;
-animation:float 12s infinite alternate;
-z-index:-1;
-}
-.neon:nth-child(1){top:10%;left:10%;}
-.neon:nth-child(2){bottom:10%;right:10%;animation-delay:3s;}
-@keyframes float{
-from{transform:translateY(0);}
-to{transform:translateY(60px);}
-}
-
-/* ===== Navbar ===== */
-nav{
-position:fixed;
-width:100%;
-padding:15px;
-background:#020617cc;
-backdrop-filter:blur(8px);
-text-align:center;
-z-index:100;
-}
-nav a{
-color:white;
-margin:15px;
-text-decoration:none;
-font-weight:bold;
-}
-nav a:hover{color:#38bdf8;}
-
-section{
-min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-text-align:center;
-padding:40px;
-}
-
-/* ===== Gradient Name ===== */
-.gradient{
-font-size:55px;
-background:linear-gradient(90deg,#38bdf8,#a78bfa,#38bdf8);
-background-size:200%;
--webkit-background-clip:text;
-color:transparent;
-animation:shine 4s linear infinite;
-}
-@keyframes shine{
-0%{background-position:0%;}
-100%{background-position:200%;}
-}
-
-#typing{font-size:22px;margin-top:10px;opacity:.85;}
-
-/* Chill panel */
 .glass{
 background:rgba(2,6,23,0.6);
-border:1px solid #1e293b;
-backdrop-filter:blur(12px);
 border-radius:14px;
 padding:20px;
-margin-top:20px;
+margin:20px;
 box-shadow:0 0 20px #0ea5e9;
 }
 
-/* Cards */
-.card{
-background:#020617;
-padding:20px;
-margin:15px;
-border-radius:14px;
-border:1px solid #1e293b;
-transition:.4s;
-}
-
-.card:hover{
-transform:scale(1.06);
-box-shadow:0 0 25px #38bdf8;
-}
-
-/* Button */
 .btn{
-  margin-top:15px;
-  padding:10px 20px;
-  border-radius:8px;
-  border:1px solid #38bdf8;
-  color:#020617;              /* 🔥 DARK TEXT */
-  background:#38bdf8;         /* 🔥 BLUE BACKGROUND */
-  font-weight:600;
-  cursor:pointer;
-  transition:.3s;
+padding:10px 20px;
+border-radius:8px;
+border:none;
+background:#38bdf8;
+cursor:pointer;
+margin:5px;
 }
 
-.btn:hover{
-  background:#0ea5e9;
-  color:white;
-  box-shadow:0 0 15px #38bdf8;
-}
-
-/* Floating Social */
-.floating-social{
+#statusBox{
 position:fixed;
 right:20px;
-bottom:20px;
+top:100px;
 display:flex;
-flex-direction:column;
-gap:12px;
-}
-.float-btn{
-width:50px;height:50px;
-border-radius:50%;
-background:#020617;
-display:flex;
-justify-content:center;
+gap:8px;
 align-items:center;
-border:1px solid #38bdf8;
-transition:.3s;
-}
-.float-btn svg{fill:white;width:24px;}
-.float-btn:hover{
-background:#38bdf8;
-transform:scale(1.15);
-box-shadow:0 0 20px #38bdf8;
 }
 
-/* Mouse Glow */
-#cursorGlow{
-position:fixed;
-width:150px;height:150px;
+#statusDot{
+width:12px;
+height:12px;
 border-radius:50%;
-background:radial-gradient(circle,#38bdf8,transparent);
-pointer-events:none;
-opacity:.25;
-transform:translate(-50%,-50%);
+background:red;
+box-shadow:0 0 10px red;
 }
 
-#upcoming,
-#history {
-  display: flex;
-  overflow-x: auto;
-  gap: 20px;
-  padding: 20px;
-  scroll-behavior: smooth;
-  width: 100%;
+.studying{
+background:#22c55e !important;
+box-shadow:0 0 12px #22c55e;
 }
-
-.date-card {
-  min-width: 220px;
-  max-width: 220px;
-  background: #020617;
-  border: 2px solid #1e293b;
-  border-radius: 20px;
-  padding: 15px;
-  flex-shrink: 0;
-}
-
-.date-card h3 {
-  margin-bottom: 10px;
-  text-align: center;
-}
-
-
- .scroll-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.scroll-btn {
-  position: absolute;
-  z-index: 10;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: none;
-  background: #020617;
-  color: white;
-  font-size: 18px;
-  cursor: pointer;
-  border: 1px solid #38bdf8;
-  transition: 0.3s;
-}
-
-.scroll-btn:hover {
-  background: #38bdf8;
-  transform: scale(1.1);
-  box-shadow: 0 0 15px #38bdf8;
-}
-
-.scroll-btn.left {
-  left: -10px;
-}
-
-.scroll-btn.right {
-  right: -10px;
-}
-
- #upcoming::-webkit-scrollbar,
-#history::-webkit-scrollbar {
-  display: none;
-}
-
- .scroll-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.scroll-wrapper #upcoming,
-.scroll-wrapper #history {
-  width: 100%;
-}
-
-
- .scroll-btn.left {
-  left: 5px;
-}
-
-.scroll-btn.right {
-  right: 5px;
-}
-
-
- #upcoming,
-#history {
-  scroll-snap-type: x mandatory;
-}
-
-.date-card {
-  scroll-snap-align: start;
-}
-
-
- #statusBox {
-  position: fixed;
-  right: 20px;
-  top: 120px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: bold;
-  font-size: 16px;
-}
-
-#statusDot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: red;
-  box-shadow: 0 0 10px red;
-}
-
-/* Studying state */
-.studying {
-  background: #22c55e !important;
-  box-shadow: 0 0 12px #22c55e;
-}
-
- 
 </style>
 </head>
 
 <body>
 
-<!-- LOADER -->
-<div id="loader">
-<div class="loader-ring"></div>
-<div>Loading...</div>
-</div>
+<div id="loader">Loading...</div>
 
-<div class="neon"></div>
-<div class="neon"></div>
-<div id="cursorGlow"></div>
-
-<nav>
-<a href="#home">Home</a>
-<a href="#skills">Skills</a>
-<a href="#daily-target">Daily Target</a>
-</nav>
-
-<section id="home">
-<h1 class="gradient">Hi, I'm Anuj 👋</h1>
-<h2 id="typing"></h2>
-
-<div class="glass">
-Bhai JEE ne lanka laga diya hai 🙂‍↕️🙂‍↕️
-</div>
- </section>
-
-<!-- ✅ ADD THIS HERE -->
-<section id="daily-target">
-<h2>Today Target 🎯</h2>
-
-<div id="todayList"></div>
-
-<div class="glass">
-<p id="progressText"></p>
-</div>
-
-<h2>Upcoming Targets ⏳</h2>
-
-<div class="scroll-wrapper">
-  <button class="scroll-btn left" onclick="scrollLeftFunc('upcoming')">◀</button>
-  <div id="upcoming"></div>
-  <button class="scroll-btn right" onclick="scrollRightFunc('upcoming')">▶</button>
-</div>
-
-<h2>Previous Targets 📅</h2>
-
-<div class="scroll-wrapper">
-  <button class="scroll-btn left" onclick="scrollLeftFunc('history')">◀</button>
-  <div id="history"></div>
-  <button class="scroll-btn right" onclick="scrollRightFunc('history')">▶</button>
-</div>
-
-</section>
-
-
-<section id="skills">
-</section>
-
- 
-<!-- Floating Icons -->
-<div class="floating-social">
-
-<a class="float-btn" href="https://t.me/hackergone" target="_blank">
-  <img src="telegram.png" class="icon-img">
-</a>
-
-<a class="float-btn" href="https://twitter.com/YOUR_USERNAME" target="_blank">
-   <i class="fab fa-x-twitter"></i>
-</a>
-</div>
+<h1>Hi, I'm Anuj 👋</h1>
 
 <div id="statusBox">
-  <span id="statusDot"></span>
-  <span id="statusText">Not Studying</span>
+<span id="statusDot"></span>
+<span id="statusText">Not Studying</span>
 </div>
 
- 
- <div class="glass">
-  <h2>Study Timer ⏱️</h2>
+<div class="glass">
+<h2>Study Timer ⏱️</h2>
+<h1 id="timerDisplay">00:00:00</h1>
 
-  <h1 id="timerDisplay">00:00:00</h1>
-
-  <button onclick="startTimer()" class="btn">▶ Start</button>
-  <button onclick="stopTimer()" class="btn">⏹ Stop</button>
-  <button onclick="resetTimer()" class="btn">🔄 Reset</button>
+<button onclick="startTimer()" class="btn">Start</button>
+<button onclick="stopTimer()" class="btn">Stop</button>
+<button onclick="resetTimer()" class="btn">Reset</button>
 </div>
 
 <script>
@@ -453,189 +95,141 @@ let timerInterval = null;
 let startTimeGlobal = null;
 let isManuallyStopped = false;
 
+// LOAD
 window.addEventListener("load", () => {
-    const loader = document.getElementById("loader");
-    if (loader) loader.classList.add("hide-loader");
+document.getElementById("loader").classList.add("hide-loader");
 
-    // Sab kuch shuru karo
-    fetchTargets(); 
-    loadTimerFromServer();
-    setInterval(loadTimerFromServer, 15000);
+loadTimerFromServer();
+setInterval(loadTimerFromServer, 5000);
 
-    const saved = localStorage.getItem("startTime");
-    if (saved) {
-        startTimeGlobal = new Date(saved);
-        runTimer();
-    }
+const saved = localStorage.getItem("startTime");
+if(saved){
+startTimeGlobal = new Date(saved);
+runTimer();
+}
 });
 
-// --- TARGETS LOADING LOGIC (Jo gayab ho gaya tha) ---
-function fetchTargets() {
-    fetch(API_URL)
-        .then(res => res.json())
-        .then(data => {
-            if (!data || data.length === 0) return;
-            renderTargets(data);
-        })
-        .catch(err => console.error("Target Error:", err));
+// START
+function startTimer(){
+if(startTimeGlobal) return;
+
+isManuallyStopped = false;
+
+const now = new Date();
+localStorage.setItem("startTime", now.toISOString());
+startTimeGlobal = now;
+
+fetch(API_URL,{
+method:"POST",
+body:JSON.stringify({
+date: now.toISOString().split("T")[0],
+start: now.toTimeString().split(" ")[0]
+})
+});
+
+runTimer();
+updateStatus();
 }
 
-function renderTargets(data) {
-    const todayList = document.getElementById("todayList");
-    const upcoming = document.getElementById("upcoming");
-    const history = document.getElementById("history");
-    
-    if(!todayList) return; 
+// STOP
+function stopTimer(){
+isManuallyStopped = true;
 
-    todayList.innerHTML = ""; 
-    upcoming.innerHTML = "";
-    history.innerHTML = "";
+clearInterval(timerInterval);
+startTimeGlobal = null;
+localStorage.removeItem("startTime");
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+updateStatus();
 
-    data.forEach(item => {
-        if (!item.Date) return;
+const now = new Date();
 
-        // Date Parsing (DD/MM/YYYY ko handle karne ke liye)
-        let d = item.Date;
-        let itemDate;
-        
-        if (typeof d === "string" && d.includes("/")) {
-            const parts = d.split("/");
-            // parts[0]=DD, parts[1]=MM, parts[2]=YYYY
-            itemDate = new Date(parts[2], parts[1] - 1, parts[0]);
-        } else {
-            itemDate = new Date(d);
-        }
-        
-        itemDate.setHours(0, 0, 0, 0);
+fetch(API_URL,{
+method:"POST",
+body:JSON.stringify({
+date: now.toISOString().split("T")[0],
+end: now.toTimeString().split(" ")[0]
+})
+});
 
-        const task1Html = item.T1 ? `<p><b>T1:</b> ${item.T1} ${item.S1 === "Done" ? "✅" : "⏳"}</p>` : "";
-        const task2Html = item.T2 ? `<p><b>T2:</b> ${item.T2} ${item.S2 === "Done" ? "✅" : "⏳"}</p>` : "";
-        const task3Html = item.T3 ? `<p><b>T3:</b> ${item.T3} ${item.S3 === "Done" ? "✅" : "⏳"}</p>` : "";
-
-        const cardContent = `
-            <div class="card">
-                <h4 style="color:#38bdf8; margin-bottom:10px;">📅 ${item.Date}</h4>
-                ${task1Html}
-                ${task2Html}
-                ${task3Html}
-            </div>
-        `;
-
-        // Accurate Comparison
-        if (itemDate.getTime() === today.getTime()) {
-            todayList.innerHTML += cardContent;
-        } else if (itemDate.getTime() > today.getTime()) {
-            upcoming.innerHTML += `<div class="date-card">${cardContent}</div>`;
-        } else if (itemDate.getTime() < today.getTime()) {
-            history.innerHTML += `<div class="date-card">${cardContent}</div>`;
-        }
-    });
-
-    if (todayList.innerHTML === "") todayList.innerHTML = "<p>No targets for today.</p>";
-}
-// --- TIMER FUNCTIONS (Already Fixed) ---
-function startTimer() {
-    if (startTimeGlobal) return;
-    isManuallyStopped = false;
-    const now = new Date();
-    localStorage.setItem("startTime", now.toISOString());
-    startTimeGlobal = now;
-    
-    fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-            date: now.toISOString().split("T")[0],
-            start: now.toTimeString().split(" ")[0]
-        })
-    });
-    runTimer();
-    updateStatus();
+setTimeout(()=>{isManuallyStopped=false},5000);
 }
 
-function stopTimer() {
-    isManuallyStopped = true; 
-    clearInterval(timerInterval);
-    startTimeGlobal = null;
-    localStorage.removeItem("startTime");
-    document.getElementById("timerDisplay").innerText = "00:00:00";
-    updateStatus();
-
-    const now = new Date();
-    fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({
-            date: now.toISOString().split("T")[0],
-            end: now.toTimeString().split(" ")[0]
-        })
-    }).finally(() => {
-        setTimeout(() => { isManuallyStopped = false; }, 15000);
-    });
+// RESET
+function resetTimer(){
+clearInterval(timerInterval);
+startTimeGlobal=null;
+localStorage.removeItem("startTime");
+document.getElementById("timerDisplay").innerText="00:00:00";
+updateStatus();
 }
 
-function resetTimer() {
-    isManuallyStopped = true;
-    clearInterval(timerInterval);
-    startTimeGlobal = null;
-    localStorage.removeItem("startTime");
-    document.getElementById("timerDisplay").innerText = "00:00:00";
-    updateStatus();
-    setTimeout(() => { isManuallyStopped = false; }, 5000);
+// TIMER LOOP
+function runTimer(){
+clearInterval(timerInterval);
+
+timerInterval = setInterval(()=>{
+if(!startTimeGlobal) return;
+
+const now = new Date();
+const diff = now - startTimeGlobal;
+
+document.getElementById("timerDisplay").innerText = formatTime(diff);
+updateStatus();
+},1000);
 }
 
-function runTimer() {
-    clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
-        if (!startTimeGlobal) return;
-        const now = new Date();
-        const diff = now - startTimeGlobal;
-        document.getElementById("timerDisplay").innerText = formatTime(diff);
-        updateStatus();
-    }, 1000);
+// FORMAT
+function formatTime(ms){
+let s=Math.floor(ms/1000);
+let h=String(Math.floor(s/3600)).padStart(2,'0');
+let m=String(Math.floor((s%3600)/60)).padStart(2,'0');
+let sec=String(s%60).padStart(2,'0');
+return h+":"+m+":"+sec;
 }
 
-function formatTime(ms) {
-    let totalSeconds = Math.floor(ms / 1000);
-    let h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-    let m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-    let s = String(totalSeconds % 60).padStart(2, '0');
-    return `${h}:${m}:${s}`;
+// STATUS
+function updateStatus(){
+const dot=document.getElementById("statusDot");
+const text=document.getElementById("statusText");
+
+if(startTimeGlobal){
+dot.classList.add("studying");
+text.innerText="Studying";
+}else{
+dot.classList.remove("studying");
+text.innerText="Not Studying";
+}
 }
 
-function updateStatus() {
-    const dot = document.getElementById("statusDot");
-    const text = document.getElementById("statusText");
-    if (startTimeGlobal) {
-        dot.classList.add("studying");
-        text.innerText = "Studying";
-    } else {
-        dot.classList.remove("studying");
-        text.innerText = "Not Studying";
-    }
+// SERVER SYNC
+function loadTimerFromServer(){
+if(isManuallyStopped) return;
+
+fetch(API_URL)
+.then(res=>res.json())
+.then(data=>{
+if(!data || data.length===0) return;
+
+const running = data.reverse().find(row =>
+(row.start || row.StartTime) && (!row.end && !row.EndTime)
+);
+
+if(running){
+const start = new Date(
+(running.date || running.Date)+"T"+
+(running.start || running.StartTime)
+);
+
+if(!startTimeGlobal || Math.abs(startTimeGlobal-start)>2000){
+startTimeGlobal=start;
+runTimer();
 }
 
-function loadTimerFromServer() {
-    if (isManuallyStopped || startTimeGlobal) return; 
-    fetch(API_URL)
-        .then(res => res.json())
-        .then(data => {
-            if (!data || data.length === 0) return;
-            const running = data.slice().reverse().find(row => 
-                (row.start || row.StartTime) && (!row.end && !row.EndTime)
-            );
-            if (running && !isManuallyStopped) {
-                const startStr = (running.date || running.Date).split("T")[0] + "T" + (running.start || running.StartTime);
-                startTimeGlobal = new Date(startStr);
-                runTimer();
-            }
-        });
+updateStatus();
 }
-
-// Scroll Functions
-function scrollLeftFunc(id) { document.getElementById(id).scrollBy({ left: -250, behavior: 'smooth' }); }
-function scrollRightFunc(id) { document.getElementById(id).scrollBy({ left: 250, behavior: 'smooth' }); }
+});
+}
 </script>
+
 </body>
 </html>
