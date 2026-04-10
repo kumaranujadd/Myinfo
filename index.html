@@ -428,9 +428,6 @@ const db = firebase.database();
 
     window.addEventListener("load", () => {
       hideLoaderSoon();
-        }
-      }
-
       fetchTargets();
     });
 
@@ -569,8 +566,7 @@ const db = firebase.database();
       el.scrollBy({ left: 250, behavior: "smooth" });
     }
     
-    let timerInterval = null;
-
+  
 // ⏱ format
 function formatTime(ms) {
   const s = Math.floor(ms / 1000);
