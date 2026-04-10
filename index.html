@@ -605,9 +605,6 @@ db.ref("timer").on("value", (snapshot) => {
     "Today: " + formatTime(diff);
 
 }, 200); // ⚡ fast like pro websites
-    const diff = Date.now() - start;
-    document.getElementById("timerDisplay").innerText = formatTime(diff);
-  }, 1000);
 
   updateStatus(true);
 });
