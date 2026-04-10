@@ -395,7 +395,6 @@ const db = firebase.database();
 
     
     let timerInterval = null;
-    let startTimeGlobal = null;
   
     function hideLoaderSoon() {
       const loader = document.getElementById("loader");
@@ -429,13 +428,6 @@ const db = firebase.database();
 
     window.addEventListener("load", () => {
       hideLoaderSoon();
-
-      const saved = localStorage.getItem("startTime");
-      if (saved) {
-        const savedDate = new Date(saved);
-        if (!isNaN(savedDate.getTime())) {
-          startTimeGlobal = savedDate;
-          runTimer();
         }
       }
 
@@ -576,110 +568,7 @@ const db = firebase.database();
       if (!el) return;
       el.scrollBy({ left: 250, behavior: "smooth" });
     }
-
-    function formatTime(ms) {
-      const totalSeconds = Math.floor(ms / 1000);
-      const h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
-      const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
-      const s = String(totalSeconds % 60).padStart(2, '0');
-      return `${h}:${m}:${s}`;
-    }
-
-    function updateStatus() {
-      const dot = document.getElementById("statusDot");
-      const text = document.getElementById("statusText");
-      if (!dot || !text) return;
-
-      if (startTimeGlobal) {
-        dot.classList.add("studying");
-        text.innerText = "Studying";
-      } else {
-        dot.classList.remove("studying");
-        text.innerText = "Not Studying";
-      }
-    }
-
-    function runTimer() {
-      clearInterval(timerInterval);
-
-      timerInterval = setInterval(() => {
-        if (!startTimeGlobal) return;
-
-        const now = new Date();
-        const diff = now - startTimeGlobal;
-
-        const timerDisplay = document.getElementById("timerDisplay");
-        if (timerDisplay) timerDisplay.innerText = formatTime(diff);
-
-        updateStatus();
-      }, 1000);
-    }
-
     
-    function startTimer() {
-      if (startTimeGlobal) return;
-
-      isManuallyStopped = false;
-
-      const now = new Date();
-
-      runTimer();
-      updateStatus();
-    }
-
-    function stopTimer() {
-      isManuallyStopped = true;
-
-      clearInterval(timerInterval);
-      timerInterval = null;
-      startTimeGlobal = null;
-      localStorage.removeItem("startTime");
-
-      const timerDisplay = document.getElementById("timerDisplay");
-      if (timerDisplay) timerDisplay.innerText = "00:00:00";
-
-      updateStatus();
-
-      const now = new Date();
-    }
-
-    function resetTimer() {
-      isManuallyStopped = true;
-
-      clearInterval(timerInterval);
-      timerInterval = null;
-      startTimeGlobal = null;
-      localStorage.removeItem("startTime");
-
-      const timerDisplay = document.getElementById("timerDisplay");
-      if (timerDisplay) timerDisplay.innerText = "00:00:00";
-
-      updateStatus();
-    }
-
-
-            updateStatus();
-          } else {
-            if (startTimeGlobal && Date.now() > localGraceUntil) {
-              clearInterval(timerInterval);
-              timerInterval = null;
-              startTimeGlobal = null;
-              localStorage.removeItem("startTime");
-
-              const timerDisplay = document.getElementById("timerDisplay");
-              if (timerDisplay) timerDisplay.innerText = "00:00:00";
-
-              updateStatus();
-            } else if (!startTimeGlobal) {
-              updateStatus();
-            }
-          }
-        })
-        .catch(err => {
-          console.error("Timer sync skipped:", err);
-        });
-    }
-
     let timerInterval = null;
 
 // ⏱ format
