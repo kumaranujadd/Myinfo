@@ -392,13 +392,11 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
     
     const TARGETS_URL = "https://opensheet.elk.sh/1A1In9joYUNj8kTljvEZ7DyZcGt7RsBsiMUcPi_LEbLA/Sheet1";
-    const TIMER_URL = "https://script.google.com/macros/s/AKfycbwfyW14gXtjvRHP4J2kQfLZ7WlMxABHEVEkjPL9whxmYZISUmmmdYHM2Ckj0VSGkZ_7/exec";
 
+    
     let timerInterval = null;
     let startTimeGlobal = null;
-    let isManuallyStopped = false;
-    let localGraceUntil = 0;
-
+  
     function hideLoaderSoon() {
       const loader = document.getElementById("loader");
       if (!loader) return;
@@ -442,11 +440,6 @@ const db = firebase.database();
       }
 
       fetchTargets();
-      loadTimerFromServer();
-
-      setInterval(() => {
-        loadTimerFromServer();
-      }, 5000);
     });
 
     function fetchTargets() {
@@ -622,30 +615,13 @@ const db = firebase.database();
       }, 1000);
     }
 
-    function postTimer(payload) {
-      return fetch(TIMER_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=UTF-8" },
-        body: JSON.stringify(payload)
-      }).catch(err => {
-        console.error("Timer post failed:", err);
-      });
-    }
-
+    
     function startTimer() {
       if (startTimeGlobal) return;
 
       isManuallyStopped = false;
 
       const now = new Date();
-      localStorage.setItem("startTime", now.toISOString());
-      startTimeGlobal = now;
-      localGraceUntil = Date.now() + 10000;
-
-      postTimer({
-        date: now.toISOString().split("T")[0],
-        start: now.toTimeString().split(" ")[0]
-      });
 
       runTimer();
       updateStatus();
@@ -653,7 +629,6 @@ const db = firebase.database();
 
     function stopTimer() {
       isManuallyStopped = true;
-      localGraceUntil = Date.now() + 15000;
 
       clearInterval(timerInterval);
       timerInterval = null;
@@ -666,17 +641,10 @@ const db = firebase.database();
       updateStatus();
 
       const now = new Date();
-      postTimer({
-        date: now.toISOString().split("T")[0],
-        end: now.toTimeString().split(" ")[0]
-      }).finally(() => {
-        setTimeout(() => { isManuallyStopped = false; }, 15000);
-      });
     }
 
     function resetTimer() {
       isManuallyStopped = true;
-      localGraceUntil = Date.now() + 5000;
 
       clearInterval(timerInterval);
       timerInterval = null;
@@ -687,43 +655,8 @@ const db = firebase.database();
       if (timerDisplay) timerDisplay.innerText = "00:00:00";
 
       updateStatus();
-
-      setTimeout(() => { isManuallyStopped = false; }, 5000);
     }
 
-    function loadTimerFromServer() {
-      if (isManuallyStopped) return;
-
-      fetch(TIMER_URL)
-        .then(res => {
-          if (!res.ok) throw new Error("Timer fetch failed");
-          return res.json();
-        })
-        .then(data => {
-          if (!Array.isArray(data) || data.length === 0) return;
-
-          const running = data.slice().reverse().find(row => {
-            const start = row.start || row.StartTime;
-            const end = row.end || row.EndTime;
-            return start && !end;
-          });
-
-          if (running) {
-            const rawDate = running.date || running.Date;
-            const rawTime = running.start || running.StartTime;
-
-            if (!rawDate || !rawTime) return;
-
-            const startStr = String(rawDate).split("T")[0] + "T" + rawTime;
-            const start = new Date(startStr);
-
-            if (isNaN(start.getTime())) return;
-
-            if (!startTimeGlobal || Math.abs(startTimeGlobal.getTime() - start.getTime()) > 2000) {
-              startTimeGlobal = start;
-              localStorage.setItem("startTime", start.toISOString());
-              runTimer();
-            }
 
             updateStatus();
           } else {
@@ -746,6 +679,77 @@ const db = firebase.database();
           console.error("Timer sync skipped:", err);
         });
     }
+
+    let timerInterval = null;
+
+// ⏱ format
+function formatTime(ms) {
+  const s = Math.floor(ms / 1000);
+  const h = String(Math.floor(s / 3600)).padStart(2, '0');
+  const m = String(Math.floor((s % 3600) / 60)).padStart(2, '0');
+  const sec = String(s % 60).padStart(2, '0');
+  return `${h}:${m}:${sec}`;
+}
+
+// 🔴 LIVE LISTENER (MAIN MAGIC)
+db.ref("timer").on("value", (snapshot) => {
+  const data = snapshot.val();
+
+  if (!data || !data.startTime) {
+    document.getElementById("timerDisplay").innerText = "00:00:00";
+    updateStatus(false);
+    clearInterval(timerInterval);
+    return;
+  }
+
+  const start = data.startTime;
+
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    const diff = Date.now() - start;
+    document.getElementById("timerDisplay").innerText = formatTime(diff);
+  }, 1000);
+
+  updateStatus(true);
+});
+
+// ▶ START
+function startTimer() {
+  db.ref("timer").set({
+    startTime: Date.now(),
+    status: "running"
+  });
+}
+
+// ⏹ STOP
+function stopTimer() {
+  db.ref("timer").set({
+    startTime: null,
+    status: "stopped"
+  });
+}
+
+// 🔄 RESET
+function resetTimer() {
+  db.ref("timer").set({
+    startTime: null,
+    status: "reset"
+  });
+}
+
+// 🟢 STATUS
+function updateStatus(isRunning) {
+  const dot = document.getElementById("statusDot");
+  const text = document.getElementById("statusText");
+
+  if (isRunning) {
+    dot.classList.add("studying");
+    text.innerText = "Studying";
+  } else {
+    dot.classList.remove("studying");
+    text.innerText = "Not Studying";
+  }
+}
   </script>
 </body>
 </html>
