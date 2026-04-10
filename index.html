@@ -372,7 +372,25 @@
     <button onclick="resetTimer()" class="btn">🔄 Reset</button>
   </div>
 
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  
   <script>
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyBQ1QHjhz7gYbWOlzoe0He1eJFhLwkg20",
+  authDomain: "my-web-2b9b6.firebaseapp.com",
+  projectId: "my-web-2b9b6",
+  storageBucket: "my-web-2b9b6.firebasestorage.app",
+  messagingSenderId: "213483527926",
+  appId: "1:213483527926:web:74e8443a889c6f683516d7",
+  measurementId: "G-TZBVMMDN0G"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+    
     const TARGETS_URL = "https://opensheet.elk.sh/1A1In9joYUNj8kTljvEZ7DyZcGt7RsBsiMUcPi_LEbLA/Sheet1";
     const TIMER_URL = "https://script.google.com/macros/s/AKfycbwfyW14gXtjvRHP4J2kQfLZ7WlMxABHEVEkjPL9whxmYZISUmmmdYHM2Ckj0VSGkZ_7/exec";
 
