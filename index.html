@@ -600,9 +600,17 @@ db.ref("timer").on("value", (snapshot) => {
 
 // ▶ START
 function startTimer() {
+  const now = Date.now();
+
   db.ref("timer").set({
-    startTime: Date.now(),
+    startTime: now,
     status: "running"
+  })
+  .then(() => {
+    console.log("Timer started in Firebase");
+  })
+  .catch(err => {
+    console.error("Firebase write error:", err);
   });
 }
 
