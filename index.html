@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,11 +47,9 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", "Segoe UI Emoji",
-               "Segoe UI Symbol", "Noto Color Emoji",
-               "Apple Color Emoji", sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
 
-  background: #020617;   /* 🔥 bring back dark theme */
+  background: #020617;
   color: white;
   overflow-x: hidden;
   scroll-behavior: smooth;
@@ -138,25 +137,24 @@ body {
       box-sizing: border-box;
     }
 
-    .gradient {
-      font-size: 55px;
-      background: linear-gradient(90deg, #38bdf8, #a78bfa, #38bdf8);
-      background-size: 200%;
-      -webkit-background-clip: text;
-      color: transparent;
-      animation: shine 4s linear infinite;
-    }
+   .gradient {
+  font-size: clamp(48px, 8vw, 90px);
+  font-weight: 800;
+  letter-spacing: -1px;
+
+  background: linear-gradient(90deg, #38bdf8, #a78bfa, #38bdf8);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  color: transparent;
+
+  animation: shine 4s linear infinite;
+}
 
     @keyframes shine {
       0% { background-position: 0%; }
       100% { background-position: 200%; }
     }
 
-    #typing {
-      font-size: 22px;
-      margin-top: 10px;
-      opacity: .85;
-    }
 
     .glass {
       background: rgba(2, 6, 23, 0.6);
@@ -303,16 +301,19 @@ body {
       .glass { width: 100%; }
     }
 
-    #typing {
-  font-size: 22px;
-  margin-top: 10px;
-  color: #38bdf8;
-  text-shadow: 0 0 8px #38bdf8;
+   #typing {
+  font-size: clamp(20px, 3vw, 32px);
+  font-weight: 600;
+  margin-top: 15px;
+
+  color: #94a3b8;
+  letter-spacing: 0.5px;
 }
     
   </style>
 </head>
 
+  
 <body>
   <div id="loader">
     <div class="loader-ring"></div>
