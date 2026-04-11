@@ -585,14 +585,17 @@ const db = firebase.database();
     
   
 // ⏱ format
-function formatTime(ms) {
+function formatTimePretty(ms) {
   const s = Math.floor(ms / 1000);
-  const h = String(Math.floor(s / 3600)).padStart(2, '0');
-  const m = String(Math.floor((s % 3600) / 60)).padStart(2, '0');
-  const sec = String(s % 60).padStart(2, '0');
-  return `${h}:${m}:${sec}`;
+
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+
+  return `${h} Hr ${m} Min ${sec} Sec`;
 }
 
+    
 // 🔴 LIVE LISTENER (MAIN MAGIC)
 db.ref("timer").on("value", (snapshot) => {
   const data = snapshot.val();
@@ -619,8 +622,8 @@ db.ref("timer").on("value", (snapshot) => {
 
     // 📊 total today time (MAIN FIX)
     document.getElementById("todayTime").innerText =
-      "Today: " + formatTime(finalTime);
-
+  "Today: " + formatTimePretty(finalTime);
+    
   }, 200); // smooth fast update
 
   updateStatus(!!start);
@@ -716,6 +719,28 @@ function typeEffect() {
 
 typeEffect();
 
+
+
+function animateTotalTime(ms) {
+  const el = document.getElementById("todayTime");
+
+  const s = Math.floor(ms / 1000);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+
+  let currentH = 0, currentM = 0, currentS = 0;
+
+  const interval = setInterval(() => {
+    if (currentH < h) currentH++;
+    else if (currentM < m) currentM++;
+    else if (currentS < sec) currentS++;
+    else clearInterval(interval);
+
+    el.innerText = `Today: ${currentH} Hr ${currentM} Min ${currentS} Sec`;
+  }, 30);
+}
+    
     
   </script>
 </body>
