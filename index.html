@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <meta charset="UTF-8">
@@ -343,8 +344,69 @@ body {
   <section id="home">
     <h1 class="gradient">Hi, I'm Anuj 👋</h1>
     <h2 id="typing"></h2>
-    <h2 id="todayTime">
-      
+    <h2 id="todayTime">Today: 00:00:00</h2>
+    <h3 id="streakCount">🔥 Streak: 0 days</h3>
+
+<div class="glass" style="margin-top:30px;">
+
+  <h2 style="margin-bottom:10px;">Study Analytics 📊</h2>
+
+  <canvas id="studyChart" style="max-width:700px; margin:auto;"></canvas>
+
+  <h3 id="streakCount" style="margin-top:25px;">🔥 Streak: 0 days</h3>
+
+  <h3 style="margin-top:10px;">Study Streak 🔥</h3>
+
+  <div id="heatmap" style="
+    display:grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap:6px;
+    max-width:500px;
+    margin:auto;
+    margin-top:15px;
+  "></div>
+
+</div>
+
+    
+      function loadHeatmap() {
+  db.ref("studyTime").once("value").then(snapshot => {
+    const data = snapshot.val() || {};
+    const container = document.getElementById("heatmap");
+
+    container.innerHTML = "";
+
+    const days = 35; // last 5 weeks
+
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+
+      const key = d.toISOString().split("T")[0];
+      const value = data[key] || 0;
+
+      let color = "#1e293b"; // default (no study)
+
+      if (value > 0) color = "#0ea5e9";
+      if (value > 2 * 3600000) color = "#22c55e";
+      if (value > 4 * 3600000) color = "#4ade80";
+
+      const box = document.createElement("div");
+      box.style.height = "18px";
+      box.style.borderRadius = "4px";
+      box.style.background = color;
+      box.style.transition = "0.2s";
+      box.onmouseover = () => box.style.transform = "scale(1.2)";
+      box.onmouseout = () => box.style.transform = "scale(1)";
+
+      box.title = `${key} - ${(value / 3600000).toFixed(2)} hr`;
+
+      container.appendChild(box);
+    }
+  });
+}
+
+        
   Today: 00:00:00
 </h2>
   </section>
@@ -636,20 +698,9 @@ db.ref("timer").on("value", (snapshot) => {
       currentSession = Date.now() - start;
     }
 
-    const finalTime = total + currentSession;
-
-    // ⏱ current running timer
-    document.getElementById("timerDisplay").innerText =
-    formatTime(currentSession);
-
-    // 📊 total today time (MAIN FIX)
-   if (!hasAnimated) {
-  animateTotalTime(finalTime);
-  hasAnimated = true;
-} else {
-  document.getElementById("todayTime").innerHTML =
-  `<span style="opacity:0.7;">Today:</span> ${formatTimePretty(finalTime)}`;
-}
+   // ⏱ current running timer (ONLY THIS LEFT)
+document.getElementById("timerDisplay").innerText =
+formatTime(currentSession);
     
   }, 200); // smooth fast update
 
@@ -679,16 +730,25 @@ function stopTimer() {
     if (!data || !data.startTime) return;
 
     const sessionTime = Date.now() - data.startTime;
-    const newTotal = (data.totalTime || 0) + sessionTime;
 
+    // ✅ SAVE DAILY DATA
+    const todayKey = new Date().toISOString().split("T")[0];
+    const todayRef = db.ref("studyTime/" + todayKey);
+
+    todayRef.once("value").then(snap => {
+      const prev = snap.val() || 0;
+      todayRef.set(prev + sessionTime); // 🔥 ADD TODAY TIME
+    });
+
+    // ✅ RESET RUNNING TIMER
     db.ref("timer").set({
       startTime: null,
-      totalTime: newTotal,
+      totalTime: 0,
       status: "stopped"
     });
   });
 }
-
+    
 // 🔄 RESET
 function resetTimer() {
   db.ref("timer").set({
@@ -744,9 +804,65 @@ function typeEffect() {
   setTimeout(typeEffect, isDeleting ? 50 : 100);
 }
 
+    function loadTodayTime() {
+  const todayKey = new Date().toISOString().split("T")[0];
+
+  db.ref("studyTime/" + todayKey).on("value", snap => {
+    const total = snap.val() || 0;
+
+    document.getElementById("todayTime").innerHTML =
+      `<span style="opacity:0.7;">Today:</span> ${formatTimePretty(total)}`;
+  });
+}
+   function getAllStudyData() {
+  db.ref("studyTime").once("value").then(snapshot => {
+    const data = snapshot.val() || {};
+
+    const labels = [];
+    const values = [];
+
+    Object.keys(data).sort().forEach(date => {
+      labels.push(date);
+      values.push((data[date] / 3600000).toFixed(2));
+    });
+
+    const ctx = document.getElementById("studyChart").getContext("2d");
+
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Study Hours",
+          data: values,
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            labels: { color: "white" }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: "white" }
+          },
+          y: {
+            ticks: { color: "white" }
+          }
+        }
+      }
+    });
+  });
+}
+    
+loadTodayTime();
+getAllStudyData();
+loadHeatmap();
+calculateStreak();   // ✅ ADD THIS
 typeEffect();
-
-
 
 function animateTotalTime(ms) {
   const el = document.getElementById("todayTime");
@@ -772,6 +888,30 @@ function animateTotalTime(ms) {
   }, 20);
 }
     
+    function calculateStreak() {
+  db.ref("studyTime").once("value").then(snapshot => {
+    const data = snapshot.val() || {};
+
+    let streak = 0;
+
+    for (let i = 0; i < 365; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+
+      const key = d.toISOString().split("T")[0];
+
+      if (data[key] && data[key] > 0) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+
+    document.getElementById("streakCount").innerText =
+      `🔥 Streak: ${streak} days`;
+  });
+}
+
     
   </script>
 </body>
