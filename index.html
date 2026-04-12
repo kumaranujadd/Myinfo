@@ -301,14 +301,26 @@ body {
       .glass { width: 100%; }
     }
 
-   #typing {
-  font-size: clamp(20px, 3vw, 32px);
-  font-weight: 600;
-  margin-top: 15px;
-
-  color: #94a3b8;
-  letter-spacing: 0.5px;
+  #typing {
+  color: #64748b;
+  font-weight: 500;
+  letter-spacing: 1px;
 }
+
+    
+    #todayTime {
+  margin-top: 20px;
+  font-size: 26px;
+  font-weight: 600;
+
+  background: linear-gradient(90deg, #38bdf8, #a78bfa);
+  -webkit-background-clip: text;
+  color: transparent;
+
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+    
     
   </style>
 </head>
@@ -331,11 +343,8 @@ body {
   <section id="home">
     <h1 class="gradient">Hi, I'm Anuj 👋</h1>
     <h2 id="typing"></h2>
-    <h2 id="todayTime" style="
-  margin-top:20px;
-  font-size:28px;
-  color:#38bdf8;
-">
+    <h2 id="todayTime">
+      
   Today: 00:00:00
 </h2>
   </section>
@@ -638,8 +647,8 @@ db.ref("timer").on("value", (snapshot) => {
   animateTotalTime(finalTime);
   hasAnimated = true;
 } else {
-  document.getElementById("todayTime").innerText =
-    "Today: " + formatTimePretty(finalTime);
+  document.getElementById("todayTime").innerHTML =
+  `<span style="opacity:0.7;">Today:</span> ${formatTimePretty(finalTime)}`;
 }
     
   }, 200); // smooth fast update
