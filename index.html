@@ -822,7 +822,7 @@ function typeEffect() {
 
     function loadHeatmap() {
   db.ref("studyTime").once("value").then(snapshot => {
-    const data = snapshot.val()  {};
+    const data = snapshot.val() || {};
     const container = document.getElementById("heatmap");
 
     container.innerHTML = "";
@@ -834,7 +834,7 @@ function typeEffect() {
       d.setDate(d.getDate() - i);
 
       const key = d.toISOString().split("T")[0];
-      const value = data[key]  0;
+      const value = data[key] || 0;
 
       let color = "#1e293b"; // default (no study)
 
@@ -849,8 +849,7 @@ function typeEffect() {
       box.style.transition = "0.2s";
       box.onmouseover = () => box.style.transform = "scale(1.2)";
       box.onmouseout = () => box.style.transform = "scale(1)";
-
-      box.title = ${key} - ${(value / 3600000).toFixed(2)} hr;
+      box.title = `${key} - ${(value / 3600000).toFixed(2)} hr`;
 
       container.appendChild(box);
     }
