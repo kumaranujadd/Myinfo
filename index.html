@@ -618,7 +618,7 @@ db.ref("timer").on("value", (snapshot) => {
 
     // ⏱ current running timer
     document.getElementById("timerDisplay").innerText =
-      formatTime(currentSession);
+    formatTimePretty(currentSession);
 
     // 📊 total today time (MAIN FIX)
     document.getElementById("todayTime").innerText =
