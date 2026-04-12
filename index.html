@@ -368,44 +368,6 @@ body {
 
 </div>
 
-    
-      function loadHeatmap() {
-  db.ref("studyTime").once("value").then(snapshot => {
-    const data = snapshot.val() || {};
-    const container = document.getElementById("heatmap");
-
-    container.innerHTML = "";
-
-    const days = 35; // last 5 weeks
-
-    for (let i = days - 1; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-
-      const key = d.toISOString().split("T")[0];
-      const value = data[key] || 0;
-
-      let color = "#1e293b"; // default (no study)
-
-      if (value > 0) color = "#0ea5e9";
-      if (value > 2 * 3600000) color = "#22c55e";
-      if (value > 4 * 3600000) color = "#4ade80";
-
-      const box = document.createElement("div");
-      box.style.height = "18px";
-      box.style.borderRadius = "4px";
-      box.style.background = color;
-      box.style.transition = "0.2s";
-      box.onmouseover = () => box.style.transform = "scale(1.2)";
-      box.onmouseout = () => box.style.transform = "scale(1)";
-
-      box.title = `${key} - ${(value / 3600000).toFixed(2)} hr`;
-
-      container.appendChild(box);
-    }
-  });
-}
-
         
   Today: 00:00:00
 </h2>
@@ -857,6 +819,44 @@ function typeEffect() {
     });
   });
 }
+
+    function loadHeatmap() {
+  db.ref("studyTime").once("value").then(snapshot => {
+    const data = snapshot.val()  {};
+    const container = document.getElementById("heatmap");
+
+    container.innerHTML = "";
+
+    const days = 35; // last 5 weeks
+
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+
+      const key = d.toISOString().split("T")[0];
+      const value = data[key]  0;
+
+      let color = "#1e293b"; // default (no study)
+
+      if (value > 0) color = "#0ea5e9";
+      if (value > 2 * 3600000) color = "#22c55e";
+      if (value > 4 * 3600000) color = "#4ade80";
+
+      const box = document.createElement("div");
+      box.style.height = "18px";
+      box.style.borderRadius = "4px";
+      box.style.background = color;
+      box.style.transition = "0.2s";
+      box.onmouseover = () => box.style.transform = "scale(1.2)";
+      box.onmouseout = () => box.style.transform = "scale(1)";
+
+      box.title = ${key} - ${(value / 3600000).toFixed(2)} hr;
+
+      container.appendChild(box);
+    }
+  });
+}
+    
     
 loadTodayTime();
 getAllStudyData();
