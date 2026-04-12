@@ -406,17 +406,6 @@ function formatTime(ms) {
 
   return `${h}:${m}:${sec}`;
 }
-
-// 📊 For TODAY (Hr Min Sec)
- {
-  const s = Math.floor(ms / 1000);
-
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = s % 60;
-
-  return `${h} Hr ${m} Min ${sec} Sec`;
-}
     
     const firebaseConfig = {
   apiKey: "AIzaSyBQ1QHjhz7gYbWOlzoe0He1eJFhLwkg20",
