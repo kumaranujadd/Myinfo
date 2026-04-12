@@ -335,7 +335,6 @@ body {
   margin-top:20px;
   font-size:28px;
   color:#38bdf8;
-  text-shadow: 0 0 10px #38bdf8;
 ">
   Today: 00:00:00
 </h2>
@@ -645,8 +644,7 @@ db.ref("timer").on("value", (snapshot) => {
     formatTime(currentSession);
 
     // 📊 total today time (MAIN FIX)
-    document.getElementById("todayTime").innerText =
-  "Today: " + formatTimePretty(finalTime);
+   animateTotalTime(finalTime);
     
   }, 200); // smooth fast update
 
@@ -753,16 +751,25 @@ function animateTotalTime(ms) {
   const m = Math.floor((s % 3600) / 60);
   const sec = s % 60;
 
-  let currentH = 0, currentM = 0, currentS = 0;
+  let current = 0;
+  const target = s;
+
+  const step = Math.max(1, Math.floor(target / 50)); // speed control
 
   const interval = setInterval(() => {
-    if (currentH < h) currentH++;
-    else if (currentM < m) currentM++;
-    else if (currentS < sec) currentS++;
-    else clearInterval(interval);
+    current += step;
 
-    el.innerText = `Today: ${currentH} Hr ${currentM} Min ${currentS} Sec`;
-  }, 30);
+    if (current >= target) {
+      current = target;
+      clearInterval(interval);
+    }
+
+    const ch = Math.floor(current / 3600);
+    const cm = Math.floor((current % 3600) / 60);
+    const cs = current % 60;
+
+    el.innerText = `Today: ${ch} Hr ${cm} Min ${cs} Sec`;
+  }, 20);
 }
     
     
