@@ -393,6 +393,8 @@ body {
   
   <script>
 
+    let hasAnimated = false;
+
 
   // ⏱ For bottom timer (00:00:00)
 function formatTime(ms) {
@@ -406,7 +408,7 @@ function formatTime(ms) {
 }
 
 // 📊 For TODAY (Hr Min Sec)
-function formatTimePretty(ms) {
+ {
   const s = Math.floor(ms / 1000);
 
   const h = Math.floor(s / 3600);
@@ -644,7 +646,13 @@ db.ref("timer").on("value", (snapshot) => {
     formatTime(currentSession);
 
     // 📊 total today time (MAIN FIX)
-   animateTotalTime(finalTime);
+   if (!hasAnimated) {
+  animateTotalTime(finalTime);
+  hasAnimated = true;
+} else {
+  document.getElementById("todayTime").innerText =
+    "Today: " + formatTimePretty(finalTime);
+}
     
   }, 200); // smooth fast update
 
@@ -746,15 +754,10 @@ typeEffect();
 function animateTotalTime(ms) {
   const el = document.getElementById("todayTime");
 
-  const s = Math.floor(ms / 1000);
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = s % 60;
-
+  const target = Math.floor(ms / 1000);
   let current = 0;
-  const target = s;
 
-  const step = Math.max(1, Math.floor(target / 50)); // speed control
+  const step = Math.max(1, Math.floor(target / 50));
 
   const interval = setInterval(() => {
     current += step;
@@ -764,11 +767,11 @@ function animateTotalTime(ms) {
       clearInterval(interval);
     }
 
-    const ch = Math.floor(current / 3600);
-    const cm = Math.floor((current % 3600) / 60);
-    const cs = current % 60;
+    const h = Math.floor(current / 3600);
+    const m = Math.floor((current % 3600) / 60);
+    const s = current % 60;
 
-    el.innerText = `Today: ${ch} Hr ${cm} Min ${cs} Sec`;
+    el.innerText = `Today: ${h} Hr ${m} Min ${s} Sec`;
   }, 20);
 }
     
