@@ -792,29 +792,37 @@ function typeEffect() {
   setTimeout(typeEffect, isDeleting ? 50 : 100);
 }
 
-  function loadTodayTime() {
+ function loadTodayTime() {
   const todayKey = new Date().toISOString().split("T")[0];
 
+  let saved = 0;
+  let startTime = null;
+
+  // listen saved time
   db.ref("studyTime/" + todayKey).on("value", snap => {
-    const saved = snap.val() || 0;
-
-    // 🔥 also listen to timer
-    db.ref("timer").on("value", timerSnap => {
-      const data = timerSnap.val() || {};
-
-      let running = 0;
-
-      if (data.startTime) {
-        running = Date.now() - data.startTime;
-      }
-
-      const total = saved + running;
-
-      document.getElementById("todayTime").innerHTML =
-        `<span style="opacity:0.7;">Today:</span> ${formatTimePretty(total)}`;
-    });
+    saved = snap.val() || 0;
   });
-}
+
+  // listen timer
+  db.ref("timer").on("value", snap => {
+    const data = snap.val() || {};
+    startTime = data.startTime || null;
+  });
+
+  // 🔥 SINGLE INTERVAL (MAIN FIX)
+  setInterval(() => {
+    let running = 0;
+
+    if (startTime) {
+      running = Date.now() - startTime;
+    }
+
+    const total = saved + running;
+
+    document.getElementById("todayTime").innerHTML =
+      `<span style="opacity:0.7;">Today:</span> ${formatTimePretty(total)}`;
+  }, 500);
+}   
 
     
    function getAllStudyData() {
