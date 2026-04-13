@@ -792,16 +792,31 @@ function typeEffect() {
   setTimeout(typeEffect, isDeleting ? 50 : 100);
 }
 
-    function loadTodayTime() {
+  function loadTodayTime() {
   const todayKey = new Date().toISOString().split("T")[0];
 
   db.ref("studyTime/" + todayKey).on("value", snap => {
-    const total = snap.val() || 0;
+    const saved = snap.val() || 0;
 
-    document.getElementById("todayTime").innerHTML =
-      `<span style="opacity:0.7;">Today:</span> ${formatTimePretty(total)}`;
+    // 🔥 also listen to timer
+    db.ref("timer").on("value", timerSnap => {
+      const data = timerSnap.val() || {};
+
+      let running = 0;
+
+      if (data.startTime) {
+        running = Date.now() - data.startTime;
+      }
+
+      const total = saved + running;
+
+      document.getElementById("todayTime").innerHTML =
+        `<span style="opacity:0.7;">Today:</span> ${formatTimePretty(total)}`;
+    });
   });
 }
+
+    
    function getAllStudyData() {
   db.ref("studyTime").once("value").then(snapshot => {
     const data = snapshot.val() || {};
