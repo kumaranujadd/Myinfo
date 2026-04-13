@@ -691,23 +691,49 @@ function stopTimer() {
 
     if (!data || !data.startTime) return;
 
-    const sessionTime = Date.now() - data.startTime;
+    const start = data.startTime;
+    const end = Date.now();
 
-    // ✅ SAVE DAILY DATA
-    const todayKey = new Date().toISOString().split("T")[0];
-    const todayRef = db.ref("studyTime/" + todayKey);
+    const startDate = new Date(start);
+    const endDate = new Date(end);
 
-    todayRef.once("value").then(snap => {
-      const prev = snap.val() || 0;
-      todayRef.set(prev + sessionTime); // 🔥 ADD TODAY TIME
-    });
+    const startKey = startDate.toISOString().split("T")[0];
+    const endKey = endDate.toISOString().split("T")[0];
 
-    // ✅ RESET RUNNING TIMER
+    // SAME DAY ✅
+    if (startKey === endKey) {
+      saveTime(startKey, end - start);
+    } 
+    else {
+      // 🔥 SPLIT INTO 2 PARTS
+
+      // Midnight of next day
+      const midnight = new Date(startDate);
+      midnight.setHours(24, 0, 0, 0);
+
+      const firstPart = midnight - start; // before 12 AM
+      const secondPart = end - midnight; // after 12 AM
+
+      saveTime(startKey, firstPart);
+      saveTime(endKey, secondPart);
+    }
+
+    // reset timer
     db.ref("timer").set({
       startTime: null,
       totalTime: 0,
       status: "stopped"
     });
+  });
+}
+
+// helper function
+function saveTime(dateKey, time) {
+  const ref = db.ref("studyTime/" + dateKey);
+
+  ref.once("value").then(snap => {
+    const prev = snap.val() || 0;
+    ref.set(prev + time);
   });
 }
     
