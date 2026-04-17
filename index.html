@@ -138,15 +138,18 @@ body {
       box-sizing: border-box;
     }
 
-   .gradient {
-  font-size: clamp(48px, 8vw, 90px);
-  font-weight: 800;
-  letter-spacing: -1px;
+  .gradient {
+  font-size: clamp(60px, 10vw, 110px);  /* BIGGER */
+  font-weight: 900;
+
+  letter-spacing: -2px;
 
   background: linear-gradient(90deg, #38bdf8, #a78bfa, #38bdf8);
   background-size: 200%;
   -webkit-background-clip: text;
   color: transparent;
+
+  text-shadow: 0 0 30px rgba(56,189,248,0.3);
 
   animation: shine 4s linear infinite;
 }
@@ -303,25 +306,43 @@ body {
     }
 
   #typing {
-  color: #64748b;
-  font-weight: 500;
-  letter-spacing: 1px;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 2px;
+
+  padding: 10px 20px;
+  border-radius: 12px;
+
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+
+  color: #38bdf8;
+
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 20px rgba(56,189,248,0.2);
+
+  display: inline-block;
+  margin-top: 15px;
 }
 
     
-    #todayTime {
-  margin-top: 20px;
-  font-size: 26px;
-  font-weight: 600;
+   #todayTime {
+  margin-top: 25px;
 
-  background: linear-gradient(90deg, #38bdf8, #a78bfa);
-  -webkit-background-clip: text;
-  color: transparent;
+  font-size: 38px;   /* BIG */
+  font-weight: 800;
 
-  letter-spacing: 1px;
+  color: #e0f2fe;
+
+  letter-spacing: 2px;
+
+  text-shadow: 0 0 20px rgba(56,189,248,0.4);
+
   transition: all 0.3s ease;
 }
-    
+    #home {
+  gap: 10px;
+}
     
   </style>
 </head>
