@@ -445,6 +445,12 @@ body {
   
   <script>
 
+    function getLocalDateKey(date = new Date()) {
+  return date.getFullYear() + "-" +
+    String(date.getMonth() + 1).padStart(2, '0') + "-" +
+    String(date.getDate()).padStart(2, '0');
+}
+
     let hasAnimated = false;
 
 
@@ -718,9 +724,9 @@ function stopTimer() {
     const startDate = new Date(start);
     const endDate = new Date(end);
 
-    const startKey = startDate.toISOString().split("T")[0];
-    const endKey = endDate.toISOString().split("T")[0];
-
+    const startKey = getLocalDateKey(startDate);
+    const endKey = getLocalDateKey(endDate);
+    
     // SAME DAY ✅
     if (startKey === endKey) {
       saveTime(startKey, end - start);
@@ -814,8 +820,7 @@ function typeEffect() {
 }
 
  function loadTodayTime() {
-  const todayKey = new Date().toISOString().split("T")[0];
-
+ const todayKey = getLocalDateKey();
   let saved = 0;
   let startTime = null;
 
@@ -903,7 +908,7 @@ function typeEffect() {
       const d = new Date();
       d.setDate(d.getDate() - i);
 
-      const key = d.toISOString().split("T")[0];
+      const key = getLocalDateKey(d);
       const value = data[key] || 0;
 
       let color = "#1e293b"; // default (no study)
@@ -967,7 +972,7 @@ function animateTotalTime(ms) {
       const d = new Date();
       d.setDate(d.getDate() - i);
 
-      const key = d.toISOString().split("T")[0];
+      const key = getLocalDateKey(d);
 
       if (data[key] && data[key] > 0) {
         streak++;
