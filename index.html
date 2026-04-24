@@ -117,35 +117,68 @@ body {
       to { transform: translateY(60px); }
     }
 
-   nav {
+  .top-nav {
   position: fixed;
-  width: 100%;
-  padding: 15px;
-  background: #ffffffcc; 
-  backdrop-filter: blur(8px);
-  text-align: center;
-  z-index: 100;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 90%;
+  max-width: 900px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 12px 20px;
+
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+
+  border-radius: 40px;
+
+  /* LIGHT YELLOW BORDER */
+  border: 1.5px solid #facc15;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+
+  z-index: 1000;
 }
 
-    nav a {
-      color: #0f172a;
-      margin: 15px;
-      text-decoration: none;
-      font-weight: bold;
-    }
+.nav-left a {
+  margin-right: 18px;
+  text-decoration: none;
+  color: #0f172a;
+  font-weight: 600;
+}
 
+.nav-left a:hover {
+  color: #0ea5e9;
+}
+
+.nav-right {
+  font-weight: 700;
+  color: #0f172a;
+}
+    
     nav a:hover { color: #38bdf8; }
 
-    section {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      text-align: center;
-      padding: 40px;
-      box-sizing: border-box;
-    }
+   section {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+
+  /* ✅ ADD THIS LINE */
+  padding-top: 120px;
+
+  padding-left: 40px;
+  padding-right: 40px;
+
+  box-sizing: border-box;
+}
 
   .gradient {
   font-size: clamp(60px, 10vw, 110px);  /* BIGGER */
@@ -366,10 +399,21 @@ body {
   <div class="neon"></div>
   <div class="neon"></div>
 
-  <nav>
+ <nav class="top-nav">
+
+  <div class="nav-left">
     <a href="#home">Home</a>
     <a href="#daily-target">Daily Target</a>
-  </nav>
+    <a href="#upcoming">Upcoming</a>
+    <a href="#history">Previous</a>
+  </div>
+
+  <div class="nav-right">
+    ⏱ <span id="navTimer">00:00:00</span>
+  </div>
+
+</nav>
+  
 
   <section id="home">
     <h1 class="gradient">Hi, I'm Anuj 👋</h1>
@@ -697,8 +741,12 @@ db.ref("timer").on("value", (snapshot) => {
     }
 
    // ⏱ current running timer (ONLY THIS LEFT)
-document.getElementById("timerDisplay").innerText =
-formatTime(currentSession);
+const time = formatTime(currentSession);
+
+document.getElementById("timerDisplay").innerText = time;
+
+// ✅ ADD THIS LINE (navbar timer)
+document.getElementById("navTimer").innerText = time;
     
   }, 200); // smooth fast update
 
