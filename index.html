@@ -50,17 +50,26 @@ body {
   margin: 0;
   font-family: 'Inter', system-ui, sans-serif;
 
-  background: #020617;
-  color: white;
+  /* ✅ NEW WHITE TEXTURED BACKGROUND */
+  background-color: #f8fafc;
+  background-image: 
+    linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+
+  /* ✅ text color changed */
+  color: #0f172a;
+
   overflow-x: hidden;
   scroll-behavior: smooth;
 }
+    
     
     #loader {
       position: fixed;
       width: 100%;
       height: 100%;
-      background: #020617;
+      background: #f8fafc;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -108,18 +117,18 @@ body {
       to { transform: translateY(60px); }
     }
 
-    nav {
-      position: fixed;
-      width: 100%;
-      padding: 15px;
-      background: #020617cc;
-      backdrop-filter: blur(8px);
-      text-align: center;
-      z-index: 100;
-    }
+   nav {
+  position: fixed;
+  width: 100%;
+  padding: 15px;
+  background: #ffffffcc; 
+  backdrop-filter: blur(8px);
+  text-align: center;
+  z-index: 100;
+}
 
     nav a {
-      color: white;
+      color: #0f172a;
       margin: 15px;
       text-decoration: none;
       font-weight: bold;
