@@ -117,27 +117,21 @@ body {
       to { transform: translateY(60px); }
     }
 
-  .top-nav {
+.top-nav {
   position: fixed;
   top: 15px;
   left: 50%;
   transform: translateX(-50%);
 
-  width: 90%;
-  max-width: 900px;
+  width: fit-content;
 
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  padding: 12px 30px;
 
-  padding: 12px 20px;
-
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(10px);
 
   border-radius: 40px;
 
-  /* LIGHT YELLOW BORDER */
   border: 1.5px solid #facc15;
 
   box-shadow: 0 10px 25px rgba(0,0,0,0.05);
@@ -145,24 +139,25 @@ body {
   z-index: 1000;
 }
 
-.nav-left a {
-  margin-right: 18px;
+/* CENTER ALL LINKS */
+.nav-center {
+  display: flex;
+  gap: 25px;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-center a {
   text-decoration: none;
   color: #0f172a;
   font-weight: 600;
 }
 
-.nav-left a:hover {
+.nav-center a:hover {
   color: #0ea5e9;
 }
 
-.nav-right {
-  font-weight: 700;
-  color: #0f172a;
-}
     
-    nav a:hover { color: #38bdf8; }
-
    section {
   min-height: 100vh;
   display: flex;
@@ -399,17 +394,14 @@ body {
   <div class="neon"></div>
   <div class="neon"></div>
 
- <nav class="top-nav">
+<nav class="top-nav">
 
-  <div class="nav-left">
+  <div class="nav-center">
     <a href="#home">Home</a>
     <a href="#daily-target">Daily Target</a>
     <a href="#upcoming">Upcoming</a>
     <a href="#history">Previous</a>
-  </div>
-
-  <div class="nav-right">
-    ⏱ <span id="navTimer">00:00:00</span>
+    <a href="#timer">Study Timer</a> <!-- ✅ NEW -->
   </div>
 
 </nav>
@@ -484,8 +476,8 @@ body {
     <span id="statusText">Not Studying</span>
   </div>
 
-  <div class="glass">
-    <h2>Study Timer ⏱️</h2>
+  <div class="glass" id="timer">
+  <h2>Study Timer ⏱️</h2>
     <h1 id="timerDisplay">00:00:00</h1>
     <button onclick="startTimer()" class="btn">▶ Start</button>
     <button onclick="stopTimer()" class="btn">⏹ Stop</button>
