@@ -380,6 +380,65 @@ body {
     #home {
   gap: 10px;
 }
+
+    .hero-title {
+  text-shadow: 0 10px 40px rgba(79,70,229,0.3);
+}
+
+
+    /* HERO TEXT STYLE */
+.hero-title {
+  font-size: clamp(60px, 9vw, 110px);
+  font-weight: 900;
+  letter-spacing: -2px;
+  margin: 0;
+
+  background: linear-gradient(90deg, #4f46e5, #6366f1);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.hero-title span {
+  display: block;
+}
+
+/* SUBTITLE */
+.hero-sub {
+  font-size: clamp(40px, 6vw, 70px);
+  font-weight: 500;
+  font-style: italic;
+  color: #64748b;
+  margin-top: 10px;
+}
+
+/* DESCRIPTION */
+.hero-text {
+  max-width: 700px;
+  font-size: 20px;
+  line-height: 1.7;
+  margin-top: 25px;
+  color: #334155;
+}
+
+/* HIGHLIGHT TEXT (YELLOW LIKE BIHAR SITE) */
+.highlight {
+  background: #fde68a;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+/* SCROLL ANIMATION */
+.reveal {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: all 0.8s ease;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
     
   </style>
 </head>
@@ -407,8 +466,22 @@ body {
 </nav>
   
 
-  <section id="home">
-    <h1 class="gradient">Hi, I'm Anuj 👋</h1>
+ <section id="home" class="hero">
+
+  <h1 class="hero-title reveal">
+    Building My <span>Future</span>
+  </h1>
+
+  <h2 class="hero-sub reveal">
+    Through Smart Study & Consistency
+  </h2>
+
+  <p class="hero-text reveal">
+    I am preparing for <span class="highlight">JEE 2026</span> with full focus.  
+    Tracking daily progress using <span class="highlight">real-time analytics</span>.  
+    Turning discipline into <span class="highlight">rank & results</span>.
+  </p>
+
     <h2 id="typing"></h2>
     <h2 id="todayTime">Today: 00:00:00</h2>
     <h3 id="streakCount">🔥 Streak: 0 days</h3>
@@ -1035,6 +1108,24 @@ function animateTotalTime(ms) {
   });
 }
 
+
+    function revealOnScroll() {
+  const reveals = document.querySelectorAll(".reveal");
+
+  reveals.forEach(el => {
+    const windowHeight = window.innerHeight;
+    const elementTop = el.getBoundingClientRect().top;
+
+    if (elementTop < windowHeight - 100) {
+      el.classList.add("active");
+    }
+  });
+}
+
+window.addEventListener("scroll", revealOnScroll);
+window.addEventListener("load", revealOnScroll);
+
+    
     
   </script>
 </body>
