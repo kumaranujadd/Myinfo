@@ -1064,7 +1064,7 @@ function typeEffect() {
     const total = saved + running;
 
     animateToday(total);
-  }, 100);
+  }, 1000);
 }   
 
     
@@ -1228,28 +1228,14 @@ window.addEventListener("load", revealOnScroll);
 function animateToday(ms) {
   const el = document.getElementById("todayLive");
 
-  const start = lastValue;
-  const end = Math.floor(ms / 1000);
+  const s = Math.floor(ms / 1000);
 
-  const duration = 300; // smooth animation
-  const startTime = performance.now();
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
 
-  function update(now) {
-    const progress = Math.min((now - startTime) / duration, 1);
-    const current = Math.floor(start + (end - start) * progress);
-
-    const h = Math.floor(current / 3600);
-    const m = Math.floor((current % 3600) / 60);
-    const s = current % 60;
-
-    el.innerText = `${h} Hr ${m} Min ${s} Sec`;
-
-    if (progress < 1) {
-      requestAnimationFrame(update);
-    } else {
-      lastValue = end;
-    }
-  }
+  el.innerText = `${h} Hr ${m} Min ${sec} Sec`;
+}
 
   requestAnimationFrame(update);
 }
