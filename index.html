@@ -1054,24 +1054,25 @@ function typeEffect() {
   setTimeout(typeEffect, isDeleting ? 50 : 100);
 }
 
- function loadTodayTime() {
- const todayKey = getLocalDateKey();
+ let todayInterval = null;
+
+function loadTodayTime() {
+  const todayKey = getLocalDateKey();
   let saved = 0;
   let startTime = null;
 
-  // listen saved time
   db.ref("studyTime/" + todayKey).on("value", snap => {
     saved = snap.val() || 0;
   });
 
-  // listen timer
   db.ref("timer").on("value", snap => {
     const data = snap.val() || {};
     startTime = data.startTime || null;
   });
 
-  // 🔥 SINGLE INTERVAL (MAIN FIX)
-  setInterval(() => {
+  if (todayInterval) clearInterval(todayInterval);
+
+  todayInterval = setInterval(() => {
     let running = 0;
 
     if (startTime) {
@@ -1082,7 +1083,7 @@ function typeEffect() {
 
     animateToday(total);
   }, 1000);
-}   
+}
 
     
    function getAllStudyData() {
@@ -1242,16 +1243,33 @@ window.addEventListener("load", revealOnScroll);
     
     let lastValue = 0;
 
+let lastTodayValue = 0;
+
 function animateToday(ms) {
   const el = document.getElementById("todayLive");
 
-  const s = Math.floor(ms / 1000);
+  const target = Math.floor(ms / 1000);
+  let current = lastTodayValue;
 
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = s % 60;
+  const step = Math.max(1, Math.floor((target - current) / 10));
 
-  el.innerText = `${h} Hr ${m} Min ${sec} Sec`;
+  const interval = setInterval(() => {
+    current += step;
+
+    if (current >= target) {
+      current = target;
+      clearInterval(interval);
+    }
+
+    const h = Math.floor(current / 3600);
+    const m = Math.floor((current % 3600) / 60);
+    const s = current % 60;
+
+    el.innerText = `${h} Hr ${m} Min ${s} Sec`;
+
+  }, 50);
+
+  lastTodayValue = target;
 }
     
   </script>
