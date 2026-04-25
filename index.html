@@ -475,11 +475,20 @@ body {
 }
 
 /* TODAY TEXT */
-  #todayTimeStyled {
-  font-size: clamp(28px, 5vw, 48px);
-  font-weight: 800;
-  letter-spacing: 1px;
-  color: #0ea5e9;   /* ✅ make visible */
+ #todayTimeStyled {
+  font-size: clamp(32px, 6vw, 60px);
+  font-weight: 900;
+  letter-spacing: -1px;
+
+  background: linear-gradient(90deg, #38bdf8, #a78bfa, #38bdf8);
+  background-size: 200%;
+
+  -webkit-background-clip: text;
+  color: transparent;
+
+  text-shadow: 0 0 30px rgba(56,189,248,0.3);
+
+  animation: shine 4s linear infinite;
 }
 
 /* "Today:" part */
@@ -508,6 +517,11 @@ body {
 @keyframes pulse {
   0% { opacity: 1; transform: scale(1); }
   100% { opacity: 0.3; transform: scale(1.6); }
+}
+
+    .today-label {
+  opacity: 0.6;
+  margin-right: 10px;
 }
 
     
@@ -1049,9 +1063,8 @@ function typeEffect() {
 
     const total = saved + running;
 
-    document.getElementById("todayLive").innerText =
-    formatTimePretty(total);
-  }, 500);
+    animateToday(total);
+  }, 100);
 }   
 
     
@@ -1210,6 +1223,36 @@ window.addEventListener("scroll", revealOnScroll);
 window.addEventListener("load", revealOnScroll);
 
     
+    let lastValue = 0;
+
+function animateToday(ms) {
+  const el = document.getElementById("todayLive");
+
+  const start = lastValue;
+  const end = Math.floor(ms / 1000);
+
+  const duration = 300; // smooth animation
+  const startTime = performance.now();
+
+  function update(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    const current = Math.floor(start + (end - start) * progress);
+
+    const h = Math.floor(current / 3600);
+    const m = Math.floor((current % 3600) / 60);
+    const s = current % 60;
+
+    el.innerText = `${h} Hr ${m} Min ${s} Sec`;
+
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    } else {
+      lastValue = end;
+    }
+  }
+
+  requestAnimationFrame(update);
+}
     
   </script>
 </body>
