@@ -541,6 +541,64 @@ body {
   color: #64748b;   /* visible solid color */
 }
 
+
+    /* 🔥 BIHAR STYLE TODAY CARD */
+.today-card {
+  margin-top: 50px;
+
+  padding: 60px 40px;
+
+  border-radius: 30px;
+
+  /* soft gradient like Bihar */
+  background: linear-gradient(120deg, #f8fafc, #eef2ff);
+
+  /* SINGLE OUTLINE (like navbar) */
+  border: 1.5px solid #fde68a;
+
+  box-shadow: 0 20px 60px rgba(0,0,0,0.05);
+
+  max-width: 1100px;
+  width: 100%;
+}
+
+/* LIVE BADGE */
+.today-card .live-badge {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+
+  color: #6366f1;
+  background: rgba(99,102,241,0.1);
+
+  padding: 6px 14px;
+  border-radius: 20px;
+
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+/* BIG HEADING */
+.today-heading {
+  font-size: clamp(50px, 7vw, 90px);
+  font-weight: 900;
+  letter-spacing: -2px;
+}
+
+/* Today label */
+.today-label {
+  color: #1e293b;
+}
+
+/* Gradient text like "Utilization" */
+#todayLive {
+  background: linear-gradient(90deg, #38bdf8, #6366f1);
+  -webkit-background-clip: text;
+  color: transparent;
+
+  text-shadow: 0 10px 30px rgba(56,189,248,0.3);
+}
+
     
   </style>
 </head>
@@ -585,17 +643,20 @@ body {
   </p>
 
     <h2 id="typing"></h2>
-    <div id="todayWrapper" class="reveal">
-  
+   <div id="todayWrapper" class="today-card reveal">
+
   <div class="live-badge">
-    ● LIVE
+    ● LIVE TRACKING
   </div>
 
-  <h2 id="todayTimeStyled">
+  <h2 class="today-heading">
     <span class="today-label">Today:</span>
     <span id="todayLive">0 Hr 0 Min 0 Sec</span>
   </h2>
+
 </div>
+
+   
     <h3 id="streakCount">🔥 Streak: 0 days</h3>
 
 <div class="glass" style="margin-top:30px;">
