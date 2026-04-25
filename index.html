@@ -1167,7 +1167,7 @@ function loadTodayTime() {
 }
     
     
-loadTodayTime();
+// loadTodayTime();
 getAllStudyData();
 loadHeatmap();
 calculateStreak();   // ✅ ADD THIS
@@ -1222,7 +1222,9 @@ function animateTotalTime(ms) {
 }
 
 
-   function revealOnScroll() {
+   let todayStarted = false;
+
+function revealOnScroll() {
   const reveals = document.querySelectorAll(".reveal");
 
   reveals.forEach(el => {
@@ -1231,8 +1233,15 @@ function animateTotalTime(ms) {
 
     if (elementTop < windowHeight - 100) {
       el.classList.add("active");
+
+      // ✅ START TIMER ONLY ONCE
+      if (el.id === "todayWrapper" && !todayStarted) {
+        loadTodayTime();
+        todayStarted = true;
+      }
+
     } else {
-      el.classList.remove("active"); // 🔥 THIS LINE FIXES YOUR ISSUE
+      el.classList.remove("active");
     }
   });
 }
