@@ -474,22 +474,38 @@ body {
   border: 1px solid rgba(14,165,233,0.3);
 }
 
-/* TODAY TEXT */
- #todayTimeStyled {
-  font-size: clamp(32px, 6vw, 60px);
+/* FULL LINE STYLE */
+#todayTimeStyled {
+  font-size: clamp(40px, 6vw, 70px);
   font-weight: 900;
   letter-spacing: -1px;
+}
 
-  background: linear-gradient(90deg, #38bdf8, #a78bfa, #38bdf8);
+/* "Today:" TEXT */
+.today-label {
+  color: #64748b;   /* same muted grey like Bihar */
+  margin-right: 12px;
+}
+
+/* 🔥 MAIN GRADIENT (LIKE UTILIZATION) */
+#todayLive {
+  background: linear-gradient(90deg, #38bdf8, #8b5cf6, #38bdf8);
   background-size: 200%;
 
   -webkit-background-clip: text;
   color: transparent;
 
-  text-shadow: 0 0 30px rgba(56,189,248,0.3);
+  text-shadow: 0 0 25px rgba(56,189,248,0.3);
 
   animation: shine 4s linear infinite;
 }
+
+/* SHINE ANIMATION */
+@keyframes shine {
+  0% { background-position: 0%; }
+  100% { background-position: 200%; }
+}
+    
 
 /* "Today:" part */
 .today-label {
