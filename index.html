@@ -475,15 +475,11 @@ body {
 }
 
 /* TODAY TEXT */
-#todayTimeStyled {
+  #todayTimeStyled {
   font-size: clamp(28px, 5vw, 48px);
   font-weight: 800;
-
-  background: linear-gradient(90deg, #38bdf8, #6366f1);
-  -webkit-background-clip: text;
-  color: transparent;
-
   letter-spacing: 1px;
+  color: #0ea5e9;   /* ✅ make visible */
 }
 
 /* "Today:" part */
@@ -864,13 +860,12 @@ const db = firebase.database();
 function formatTimePretty(ms) {
   const s = Math.floor(ms / 1000);
 
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  const sec = s % 60;
+  const h = String(Math.floor(s / 3600)).padStart(2, '0');
+  const m = String(Math.floor((s % 3600) / 60)).padStart(2, '0');
+  const sec = String(s % 60).padStart(2, '0');
 
-  return `${h} Hr ${m} Min ${sec} Sec`;
+  return `${h}:${m}:${sec}`;
 }
-
     
 // 🔴 LIVE LISTENER (MAIN MAGIC)
 db.ref("timer").on("value", (snapshot) => {
@@ -894,14 +889,6 @@ db.ref("timer").on("value", (snapshot) => {
 const time = formatTime(currentSession);
 
 document.getElementById("timerDisplay").innerText = time;
-
-// ✅ ADD THIS LINE (navbar timer)
-document.getElementById("navTimer").innerText = time;
-    
-  }, 200); // smooth fast update
-
-  updateStatus(!!start);
-});
 
 // ▶ START
 function startTimer() {
