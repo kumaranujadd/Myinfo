@@ -430,8 +430,8 @@ body {
 /* SCROLL ANIMATION */
 .reveal {
   opacity: 0;
-  transform: translateY(60px);
-  transition: all 0.8s ease;
+  transform: translateY(80px);
+  transition: all 0.7s ease;
 }
 
 .reveal.active {
@@ -1109,7 +1109,7 @@ function animateTotalTime(ms) {
 }
 
 
-    function revealOnScroll() {
+   function revealOnScroll() {
   const reveals = document.querySelectorAll(".reveal");
 
   reveals.forEach(el => {
@@ -1118,10 +1118,12 @@ function animateTotalTime(ms) {
 
     if (elementTop < windowHeight - 100) {
       el.classList.add("active");
+    } else {
+      el.classList.remove("active"); // 🔥 THIS LINE FIXES YOUR ISSUE
     }
   });
 }
-
+    
 window.addEventListener("scroll", revealOnScroll);
 window.addEventListener("load", revealOnScroll);
 
