@@ -3,6 +3,7 @@
 <head>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -343,23 +344,19 @@ body {
     }
 
   #typing {
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: 2px;
+  font-family: 'Poppins', sans-serif;
 
-  padding: 10px 20px;
-  border-radius: 12px;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: 1px;
 
-  background: rgba(56, 189, 248, 0.1);
-  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #ef4444; /* light red */
 
-  color: #38bdf8;
-
-  backdrop-filter: blur(10px);
-  box-shadow: 0 0 20px rgba(56,189,248,0.2);
+  margin-top: 20px;
 
   display: inline-block;
-  margin-top: 15px;
+
+  transition: all 0.3s ease;
 }
 
     
@@ -439,6 +436,18 @@ body {
   transform: translateY(0);
 }
 
+    #typing {
+  text-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+}
+   
+    .cursor {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0; }
+}
     
   </style>
 </head>
@@ -924,8 +933,8 @@ function typeEffect() {
     j++;
   }
 
-  document.getElementById("typing").innerHTML =
-    currentText.substring(0, j) + "|";
+ document.getElementById("typing").innerHTML =
+  currentText.substring(0, j) + "<span class='cursor'>|</span>";
 
   if (!isDeleting && j === currentText.length) {
     isDeleting = true;
