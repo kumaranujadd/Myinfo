@@ -515,10 +515,19 @@ body {
 
 /* VALUE */
 #todayLive {
-  color: #38bdf8;
-  text-shadow: 0 0 20px rgba(56,189,248,0.3);
+  background: linear-gradient(90deg, #38bdf8, #6366f1, #38bdf8);
+  background-size: 200%;
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+
+  text-shadow: 0 10px 30px rgba(56,189,248,0.3);
+
+  animation: shine 4s linear infinite;
 }
 
+    
     .live-badge::before {
   content: "";
   display: inline-block;
