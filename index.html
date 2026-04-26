@@ -1308,33 +1308,34 @@ function loadTodayTime() {
     const ctx = document.getElementById("studyChart").getContext("2d");
 
     new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: labels,
-        datasets: [{
-          label: "Study Hours",
-          data: values,
-          tension: 0.3,
-          fill: true
-        }]
-      },
-
-      
-      options: {
-  plugins: {
-    legend: {
-      labels: { color: "#334155" }
-    }
+  type: "line",
+  data: {
+    labels: labels,
+    datasets: [{
+      label: "Study Hours",
+      data: values,
+      tension: 0.3,
+      fill: true
+    }]
   },
-  scales: {
-    x: {
-      ticks: { color: "#334155" }
+  options: {
+    plugins: {
+      legend: {
+        labels: { color: "#334155" }
+      }
     },
-    y: {
-      ticks: { color: "#334155" }
+    scales: {
+      x: {
+        ticks: { color: "#334155" }
+      },
+      y: {
+        ticks: { color: "#334155" }
+      }
     }
   }
-}
+});  
+
+    
     function loadHeatmap() {
   db.ref("studyTime").once("value").then(snapshot => {
     const data = snapshot.val() || {};
