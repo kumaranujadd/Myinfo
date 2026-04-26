@@ -1059,14 +1059,16 @@ const db = firebase.database();
       }
 
       if (progressText) {
-        progressText.textContent = todayTotal
-          const percent = todayTotal ? Math.round((todayDone / todayTotal) * 100) : 0;
 
-      const todayEl = document.getElementById("todayDone");
-      if (todayEl) todayEl.innerText = percent + "%";
-          ? `Today: ${todayDone}/${todayTotal} done`
-          : "No target progress for today.";
-      }
+  progressText.textContent = todayTotal
+    ? `Today: ${todayDone}/${todayTotal} done`
+    : "No target progress for today.";
+
+  const percent = todayTotal ? Math.round((todayDone / todayTotal) * 100) : 0;
+
+  const todayEl = document.getElementById("todayDone");
+  if (todayEl) todayEl.innerText = percent + "%";
+}
     }
 
     function scrollLeftFunc(id) {
