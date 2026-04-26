@@ -550,23 +550,28 @@ body {
 
 
    #todayLive {
-  display: inline-block !important;
+  display: inline-block;
 
-  background: linear-gradient(90deg, red, yellow, green);
-  background-size: 300% 100% !important;
+  background: linear-gradient(
+    90deg,
+    #38bdf8,
+    #6366f1,
+    #8b5cf6,
+    #6366f1,
+    #38bdf8
+  );
 
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
+  background-size: 400% 100%;
 
-  -webkit-text-fill-color: transparent !important;
-  color: transparent !important;
+  -webkit-background-clip: text;
+  background-clip: text;
 
-  animation: shine 3s linear infinite !important;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 
-  text-shadow: 0 10px 30px rgba(56, 189, 248, 0.25);
+  animation: shine 2s linear infinite;
 
   white-space: nowrap;
-  will-change: background-position;
 }
 
     
