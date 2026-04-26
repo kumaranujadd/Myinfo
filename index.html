@@ -698,6 +698,85 @@ body {
   font-weight: 900;
 }
 
+    /* 🔥 MAIN DASHBOARD GRID */
+.dashboard {
+  display: grid;
+  grid-template-columns: 1.2fr 2fr;
+  gap: 25px;
+  margin-top: 30px;
+}
+
+/* LEFT HERO CARD */
+.hero-card {
+  padding: 40px;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #ffe4e6, #fef3c7);
+  border: 1px solid #fde68a;
+}
+
+/* RIGHT CHART CARD */
+.chart-card {
+  padding: 25px;
+  border-radius: 25px;
+  background: white;
+  border: 1px solid #e2e8f0;
+}
+
+/* STATS ROW */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.mini-card {
+  padding: 15px;
+  border-radius: 15px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+.mini-card h4 {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+}
+
+.mini-card p {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 5px 0 0;
+}
+
+/* LOWER GRID */
+.lower-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.box {
+  padding: 20px;
+  border-radius: 20px;
+  background: white;
+  border: 1px solid #e2e8f0;
+}
+
+/* PROGRESS CIRCLE */
+.progress-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: conic-gradient(#ef4444 75%, #e5e7eb 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
     
   </style>
 </head>
@@ -755,8 +834,92 @@ body {
 
 </div>
 
-<div class="glass" style="margin-top:30px;">
+<div class="glass">
 
+  <div class="dashboard">
+
+    <!-- LEFT -->
+    <div class="hero-card">
+      <p class="tag">● STUDY OVERVIEW</p>
+
+      <h1 style="font-size:60px; margin:0;">
+        Study <span style="color:#ef4444;">Analytics</span>
+      </h1>
+
+      <p style="color:#64748b;">
+        Track your progress, analyze patterns and dominate your JEE preparation.
+      </p>
+
+      <div class="countdown-box">
+        <div class="stat-title">JEE COUNTDOWN</div>
+        <div class="countdown-number" id="jeeDays">249</div>
+        <div>days left</div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="chart-card">
+      <h3>Study Hours Overview</h3>
+      <canvas id="studyChart"></canvas>
+
+      <div class="stats-row">
+        <div class="mini-card">
+          <h4>AVG STUDY</h4>
+          <p id="avgHours">3.9 hrs</p>
+        </div>
+
+        <div class="mini-card">
+          <h4>TOTAL HOURS</h4>
+          <p id="totalHours">27.8 hrs</p>
+        </div>
+
+        <div class="mini-card">
+          <h4>BEST DAY</h4>
+          <p>6.8 hrs</p>
+        </div>
+
+        <div class="mini-card">
+          <h4>STREAK</h4>
+          <p id="streakCard">6 days</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LOWER CARDS -->
+  <div class="lower-grid">
+
+    <div class="box">
+      <h4>🔥 Streak</h4>
+      <h2 id="streakCard">6 days</h2>
+    </div>
+
+    <div class="box">
+      <h4>Today's Progress</h4>
+      <div class="progress-circle">75%</div>
+      <p>4.5 / 6 hrs</p>
+    </div>
+
+    <div class="box">
+      <h4>Yesterday</h4>
+      <p>5.1 hrs</p>
+    </div>
+
+    <div class="box">
+      <h4>Weekly</h4>
+      <p>27.8 hrs</p>
+    </div>
+
+    <div class="box">
+      <h4>Subjects</h4>
+      <p>Physics 40%</p>
+    </div>
+
+  </div>
+
+</div>
+   
   <div class="analytics-hero">
   <p class="tag">STUDY OVERVIEW</p>
   
@@ -1545,6 +1708,23 @@ calculateAvg();
 
 calculatePrev();
 
+    function calculateTotalHours() {
+  db.ref("studyTime").once("value").then(snap => {
+    const data = snap.val() || {};
+
+    let total = 0;
+
+    Object.values(data).forEach(v => {
+      total += v;
+    });
+
+    const hrs = (total / 3600000).toFixed(1);
+
+    document.getElementById("totalHours").innerText = hrs + " hrs";
+  });
+}
+
+calculateTotalHours();
     
   </script>
 </body>
