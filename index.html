@@ -803,21 +803,6 @@ body {
   
   <canvas id="studyChart" style="max-width:700px; margin:auto;"></canvas>
 
-  <h3 id="streakCount" class="streak-text">
-  🔥 Streak: <span id="streakNumber">0</span> days
-</h3>
-
-  <h3 style="margin-top:10px;">Study Streak 🔥</h3>
-
-  <div id="heatmap" style="
-    display:grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap:6px;
-    max-width:500px;
-    margin:auto;
-    margin-top:15px;
-  "></div>
-
 </div>
 
         
@@ -1376,8 +1361,6 @@ function loadTodayTime() {
     
 // loadTodayTime();
 getAllStudyData();
-loadHeatmap();
-calculateStreak();   // ✅ ADD THIS
 typeEffect();
 
 function animateTotalTime(ms) {
