@@ -1095,10 +1095,18 @@ const db = firebase.database();
     }
 
     window.addEventListener("load", () => {
-      hideLoaderSoon();
-      fetchTargets();
-    });
+  hideLoaderSoon();
+  fetchTargets();
+  getAllStudyData();
+  typeEffect();
 
+  // backup (important)
+  setTimeout(() => {
+    hideLoaderSoon();
+  }, 2000);
+});
+
+   
     function fetchTargets() {
       fetch(TARGETS_URL)
         .then(res => {
@@ -1566,14 +1574,6 @@ function loadTodayTime() {
   });
 }
     
-    
-// loadTodayTime();
-window.onload = () => {
-  hideLoaderSoon();
-  fetchTargets();
-  getAllStudyData();
-  typeEffect();
-};
 
 function animateTotalTime(ms) {
   const el = document.getElementById("todayTime");
