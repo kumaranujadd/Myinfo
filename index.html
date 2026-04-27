@@ -823,6 +823,75 @@ body {
   height: 220px !important;  /* ✅ PERFECT HEIGHT */
 }
 
+    /* 🔥 MODERN MINI CARDS (MATCH IMAGE DESIGN) */
+.mini-card.modern {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 16px 18px;
+
+  border-radius: 18px;
+
+  background: linear-gradient(120deg, #ffffff, #fff7ed);
+
+  border: 1px solid #fde68a;
+
+  box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+
+  transition: 0.3s;
+}
+
+.mini-card.modern:hover {
+  transform: translateY(-4px);
+}
+
+/* ICON CIRCLE */
+.icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 16px;
+}
+
+/* COLORS LIKE IMAGE */
+.icon.pink {
+  background: rgba(244,63,94,0.15);
+  color: #ef4444;
+}
+
+.icon.purple {
+  background: rgba(168,85,247,0.15);
+  color: #8b5cf6;
+}
+
+.icon.orange {
+  background: rgba(249,115,22,0.15);
+  color: #f97316;
+}
+
+.icon.red {
+  background: rgba(239,68,68,0.15);
+  color: #ef4444;
+}
+
+/* TEXT STYLE */
+.mini-card.modern h4 {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+}
+
+.mini-card.modern p {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 2px 0 0;
+}
     
   </style>
 </head>
@@ -909,29 +978,40 @@ body {
       <canvas id="studyChart"></canvas>
 
       <div class="stats-row">
-        <div class="mini-card">
-          <h4>AVG STUDY</h4>
-          <p id="avgHours">3.9 hrs</p>
-        </div>
 
-        <div class="mini-card">
-          <h4>TOTAL HOURS</h4>
-          <p id="totalHours">27.8 hrs</p>
-        </div>
-
-        <div class="mini-card">
-          <h4>BEST DAY</h4>
-          <p>6.8 hrs</p>
-        </div>
-
-        <div class="mini-card">
-          <h4>STREAK</h4>
-          <p id="streakCard">6 days</p>
-        </div>
-      </div>
+  <div class="mini-card modern">
+    <div class="icon pink"><i class="fas fa-clock"></i></div>
+    <div>
+      <h4>AVG STUDY HOURS</h4>
+      <p id="avgHours">3.9 hrs</p>
     </div>
-
   </div>
+
+  <div class="mini-card modern">
+    <div class="icon purple"><i class="fas fa-chart-line"></i></div>
+    <div>
+      <h4>TOTAL HOURS</h4>
+      <p id="totalHours">27.8 hrs</p>
+    </div>
+  </div>
+
+  <div class="mini-card modern">
+    <div class="icon orange"><i class="fas fa-calendar"></i></div>
+    <div>
+      <h4>BEST DAY</h4>
+      <p>6.8 hrs</p>
+    </div>
+  </div>
+
+  <div class="mini-card modern">
+    <div class="icon red"><i class="fas fa-fire"></i></div>
+    <div>
+      <h4>CURRENT STREAK</h4>
+      <p id="streakCard">6 days</p>
+    </div>
+  </div>
+
+</div>
 
   <!-- LOWER CARDS -->
   <div class="lower-grid">
