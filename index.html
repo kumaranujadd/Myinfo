@@ -1460,82 +1460,41 @@ function loadTodayTime() {
       values.push((data[date] / 3600000).toFixed(1));
     });
 
-    const ctx = document.getElementById("studyChart").getContext("2d");
+    // ✅ SAFETY CHECK (MOST IMPORTANT)
+    const canvas = document.getElementById("studyChart");
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
 
     const gradient = ctx.createLinearGradient(0, 0, 0, 220);
-
     gradient.addColorStop(0, "rgba(249,115,22,0.35)");
     gradient.addColorStop(1, "rgba(249,115,22,0)");
 
-    
     new Chart(ctx, {
       type: "line",
       data: {
-        labels: labels,
+        labels: labels.length ? labels : ["No Data"],
         datasets: [{
-  data: values,
-  fill: true,
-  backgroundColor: gradient,
-  borderColor: "#f97316",
-  borderWidth: 2.5,
-
-  tension: 0.45,  // smoother curve
-
-  pointBackgroundColor: "#f97316",
-  pointBorderColor: "#ffffff",
-  pointBorderWidth: 2,
-  pointRadius: 4,
-  pointHoverRadius: 6
-}]
+          data: values.length ? values : [0],
+          fill: true,
+          backgroundColor: gradient,
+          borderColor: "#f97316",
+          borderWidth: 2.5,
+          tension: 0.45,
+          pointRadius: 3
+        }]
       },
       options: {
-  responsive: true,
-  maintainAspectRatio: false,  // ✅ MOST IMPORTANT
-
-  plugins: {
-    legend: { display: false }
-  },
-
-  layout: {
-    padding: {
-      top: 10,
-      bottom: 0,
-      left: 5,
-      right: 5
-    }
-  },
-
-  scales: {
-    x: {
-      grid: { display: false },
-      ticks: { 
-        color: "#64748b",
-        font: { size: 12 }
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } }
       }
-    },
-    y: {
-      beginAtZero: true,
-      grid: { 
-        color: "#e5e7eb",
-        drawBorder: false
-      },
-      ticks: { 
-        color: "#64748b",
-        font: { size: 12 },
-        stepSize: 1
-      }
-    }
-  },
+    });
 
- elements: {
-  line: {
-    tension: 0.45
-  }
+  }).catch(() => {
+    console.log("Chart load failed");
+  });
 }
-});   
-
-});  
-}   
         
     
     function loadHeatmap() {
