@@ -808,6 +808,21 @@ body {
   max-width: 100%;
 }
 
+
+    .chart-card {
+  padding: 20px;
+  border-radius: 25px;
+  background: white;
+  border: 1px solid #e2e8f0;
+
+  height: 320px;   /* ✅ CONTROL SIZE */
+}
+
+#studyChart {
+  width: 100% !important;
+  height: 220px !important;  /* ✅ PERFECT HEIGHT */
+}
+
     
   </style>
 </head>
@@ -1439,45 +1454,78 @@ function loadTodayTime() {
 
     const ctx = document.getElementById("studyChart").getContext("2d");
 
-    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-    gradient.addColorStop(0, "rgba(249,115,22,0.4)");
+    const gradient = ctx.createLinearGradient(0, 0, 0, 220);
+
+    gradient.addColorStop(0, "rgba(249,115,22,0.35)");
     gradient.addColorStop(1, "rgba(249,115,22,0)");
 
+    
     new Chart(ctx, {
       type: "line",
       data: {
         labels: labels,
         datasets: [{
-          data: values,
-          tension: 0.4,
-          fill: true,
-          backgroundColor: gradient,
-          borderColor: "#f97316",
-          borderWidth: 3,
-          pointBackgroundColor: "#f97316",
-          pointRadius: 5,
-          pointHoverRadius: 7
-        }]
+  data: values,
+  fill: true,
+  backgroundColor: gradient,
+  borderColor: "#f97316",
+  borderWidth: 2.5,
+
+  tension: 0.45,  // smoother curve
+
+  pointBackgroundColor: "#f97316",
+  pointBorderColor: "#ffffff",
+  pointBorderWidth: 2,
+  pointRadius: 4,
+  pointHoverRadius: 6
+}]
       },
       options: {
-        plugins: {
-          legend: { display: false }
-        },
-        scales: {
-          x: {
-            grid: { display: false },
-            ticks: { color: "#64748b" }
-          },
-          y: {
-            grid: { color: "#e5e7eb" },
-            ticks: { color: "#64748b" }
-          }
-        }
-      }
-    });
+  responsive: true,
+  maintainAspectRatio: false,  // ✅ MOST IMPORTANT
 
-  });
+  plugins: {
+    legend: { display: false }
+  },
+
+  layout: {
+    padding: {
+      top: 10,
+      bottom: 0,
+      left: 5,
+      right: 5
+    }
+  },
+
+  scales: {
+    x: {
+      grid: { display: false },
+      ticks: { 
+        color: "#64748b",
+        font: { size: 12 }
+      }
+    },
+    y: {
+      beginAtZero: true,
+      grid: { 
+        color: "#e5e7eb",
+        drawBorder: false
+      },
+      ticks: { 
+        color: "#64748b",
+        font: { size: 12 },
+        stepSize: 1
+      }
+    }
+  },
+
+  elements: {
+    line: {
+      tension: 0.45
+    }
+  }
 }
+        
     
     function loadHeatmap() {
   db.ref("studyTime").once("value").then(snapshot => {
