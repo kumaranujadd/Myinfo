@@ -705,11 +705,13 @@ body {
 .dashboard {
   display: grid;
 
-  /* 🔥 Better space utilization */
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 420px minmax(0, 1fr);
 
-  gap: 30px;
+  gap: 28px;
+
   width: 100%;
+
+  align-items: start;
 }
 
 /* LEFT HERO CARD */
@@ -720,20 +722,17 @@ body {
   border: 1px solid #fde68a;
 }
 
-/* RIGHT CHART CARD */
-.chart-card {
-  padding: 25px;
-  border-radius: 25px;
-  background: white;
-  border: 1px solid #e2e8f0;
-}
-
 /* STATS ROW */
 .stats-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  margin-top: 20px;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 16px;
+
+  margin-top: 28px;
+
+  width: 100%;
 }
 
 .mini-card {
@@ -810,41 +809,51 @@ body {
 
 
     .chart-card {
-  padding: 20px;
-  border-radius: 25px;
+  padding: 28px;
+  border-radius: 30px;
   background: white;
   border: 1px solid #e2e8f0;
 
-  height: 320px;   /* ✅ CONTROL SIZE */
+  display: flex;
+  flex-direction: column;
+
+  min-height: 520px;
+
+  overflow: hidden;
 }
 
 #studyChart {
   width: 100% !important;
-  height: 220px !important;  /* ✅ PERFECT HEIGHT */
+  height: 260px !important;
+  margin-top: 10px;
 }
 
     /* 🔥 MODERN MINI CARDS (MATCH IMAGE DESIGN) */
 .mini-card.modern {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 
-  padding: 16px 18px;
+  padding: 18px 16px;
 
-  border-radius: 18px;
+  border-radius: 20px;
 
-  background: linear-gradient(120deg, #ffffff, #fff7ed);
+  background: linear-gradient(
+    135deg,
+    #fff7ed,
+    #ffffff
+  );
 
-  border: 1px solid #fde68a;
+  border: 1px solid #f3e8ff;
 
-  box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
 
-  transition: 0.3s;
+  min-width: 0;
+
+  transition: 0.3s ease;
 }
 
-.mini-card.modern:hover {
-  transform: translateY(-4px);
-}
+    
 
 /* ICON CIRCLE */
 .icon {
