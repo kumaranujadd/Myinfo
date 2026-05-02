@@ -552,7 +552,7 @@ body {
 }
 
 
-  #todayLive {
+ #todayLive {
   display: inline-block;
 
   background: linear-gradient(
@@ -571,7 +571,6 @@ body {
   color: transparent;
 
   animation: shine 4s linear infinite;
-}
 
   white-space: nowrap;
 }
@@ -818,22 +817,18 @@ body {
 
 .chart-card {
   background: white;
-
   border-radius: 32px;
-
   padding: 34px;
-
   border: 1px solid #f1f5f9;
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,0.04);
-
-  min-height: 560px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.04);
 
   display: flex;
   flex-direction: column;
+
+  overflow: hidden;
 }
 
+    
 .chart-top {
   display: flex;
   justify-content: space-between;
@@ -1010,6 +1005,13 @@ body {
     font-size: 28px;
   }
 }
+
+    
+    #home .glass {
+  max-width: 1600px;
+  width: 100%;
+}
+
     
   </style>
 </head>
@@ -1158,32 +1160,7 @@ body {
 
 </div>
 
-  <div class="mini-card modern">
-    <div class="icon purple"><i class="fas fa-chart-line"></i></div>
-    <div>
-      <h4>TOTAL HOURS</h4>
-      <p id="totalHours">27.8 hrs</p>
-    </div>
-  </div>
-
-  <div class="mini-card modern">
-    <div class="icon orange"><i class="fas fa-calendar"></i></div>
-    <div>
-      <h4>BEST DAY</h4>
-      <p>6.8 hrs</p>
-    </div>
-  </div>
-
-  <div class="mini-card modern">
-    <div class="icon red"><i class="fas fa-fire"></i></div>
-    <div>
-      <h4>CURRENT STREAK</h4>
-      <p id="streakCard">6 days</p>
-    </div>
-  </div>
-
-</div>
-
+ 
         
   </section>
 
