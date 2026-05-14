@@ -1288,17 +1288,30 @@ const db = firebase.database();
     }
 
     window.addEventListener("load", () => {
+
   hideLoaderSoon();
+
   fetchTargets();
-  getAllStudyData();
+
   typeEffect();
 
-  // backup (important)
+  animateChartOnScroll();
+
+  calculateAvg();
+
+  calculateTotalHours();
+
+  calculateStreak();
+
+  updateCountdown();
+
   setTimeout(() => {
     hideLoaderSoon();
   }, 2000);
+
 });
 
+    
    
     function fetchTargets() {
       fetch(TARGETS_URL)
@@ -1924,12 +1937,6 @@ function calculateStreak() {
 // AUTO START
 // ===============================
 
-calculateAvg();
-
-calculateTotalHours();
-
-calculateStreak();
-    
   </script>
 </body>
 </html>
