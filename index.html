@@ -1288,30 +1288,17 @@ const db = firebase.database();
     }
 
     window.addEventListener("load", () => {
-
   hideLoaderSoon();
-
   fetchTargets();
-
+  getAllStudyData();
   typeEffect();
 
-  animateChartOnScroll();
-
-  calculateAvg();
-
-  calculateTotalHours();
-
-  calculateStreak();
-
-  updateCountdown();
-
+  // backup (important)
   setTimeout(() => {
     hideLoaderSoon();
   }, 2000);
-
 });
 
-    
    
     function fetchTargets() {
       fetch(TARGETS_URL)
@@ -1653,37 +1640,7 @@ function loadTodayTime() {
 }
 
     
-  // ===============================
-// JEE COUNTDOWN (31 DEC 2026)
-// ===============================
-
-function updateCountdown() {
-
-  const examDate = new Date("2026-12-31T23:59:59");
-
-  const now = new Date();
-
-  const diff = examDate - now;
-
-  const days = Math.ceil(
-    diff / (1000 * 60 * 60 * 24)
-  );
-
-  document.getElementById("jeeDays").innerText = days;
-}
-
-updateCountdown();
-
-
-// ===============================
-// GRAPH WITH SCROLL ANIMATION
-// ===============================
-
-let studyChart = null;
-let chartAnimated = false;
-
-function getAllStudyData() {
-
+  function getAllStudyData() {
   db.ref("studyTime").once("value").then(snapshot => {
 
     const data = snapshot.val() || {};
@@ -1691,194 +1648,309 @@ function getAllStudyData() {
     const labels = [];
     const values = [];
 
-    Object.keys(data)
-      .sort()
-      .slice(-7)
-      .forEach(date => {
+    Object.keys(data).sort().slice(-7).forEach(date => {
+      labels.push(date);
+      values.push((data[date] / 3600000).toFixed(1));
+    });
 
-        labels.push(date);
-
-        values.push(
-          +(data[date] / 3600000).toFixed(1)
-        );
-      });
-
+    // ✅ SAFETY CHECK (MOST IMPORTANT)
     const canvas = document.getElementById("studyChart");
-
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
 
-    if (studyChart) {
-      studyChart.destroy();
-    }
-
-    const gradient = ctx.createLinearGradient(0, 0, 0, 350);
-
+    const gradient = ctx.createLinearGradient(0, 0, 0, 220);
     gradient.addColorStop(0, "rgba(249,115,22,0.35)");
     gradient.addColorStop(1, "rgba(249,115,22,0)");
 
-    studyChart = new Chart(ctx, {
-
+    new Chart(ctx, {
       type: "line",
-
       data: {
-        labels,
-
+        labels: labels.length ? labels : ["No Data"],
         datasets: [{
-          label: "Study Hours",
-
-          data: values,
-
+          data: values.length ? values : [0],
           fill: true,
-
           backgroundColor: gradient,
-
           borderColor: "#f97316",
-
-          borderWidth: 3,
-
+          borderWidth: 2.5,
           tension: 0.45,
-
-          pointRadius: 4,
-
-          pointHoverRadius: 7,
-
-          pointBackgroundColor: "#fff",
-
-          pointBorderColor: "#f97316",
-
-          pointBorderWidth: 2
+          pointRadius: 3
         }]
       },
-
       options: {
+  responsive: true,
+  maintainAspectRatio: false,
 
-        responsive: true,
+  plugins: {
+    legend: {
+      display: false
+    }
+  },
 
-        maintainAspectRatio: false,
+  scales: {
 
-        animation: {
-          duration: 2200,
-          easing: "easeOutQuart"
-        },
+    x: {
+      grid: {
+        display: false
+      },
 
-        plugins: {
-          legend: {
-            display: false
-          }
-        },
-
-        scales: {
-
-          x: {
-            grid: {
-              display: false
-            },
-
-            ticks: {
-              color: "#64748b",
-              font: {
-                size: 13,
-                weight: "600"
-              }
-            }
-          },
-
-          y: {
-            beginAtZero: true,
-
-            grid: {
-              color: "rgba(148,163,184,0.15)"
-            },
-
-            ticks: {
-              color: "#64748b",
-              stepSize: 2,
-
-              font: {
-                size: 13,
-                weight: "600"
-              }
-            }
-          }
+      ticks: {
+        color: "#64748b",
+        font: {
+          size: 14,
+          weight: "600"
         }
       }
+    },
+
+    y: {
+      beginAtZero: true,
+
+      grid: {
+        color: "rgba(148,163,184,0.15)"
+      },
+
+      ticks: {
+        color: "#64748b",
+        stepSize: 2,
+
+        font: {
+          size: 13,
+          weight: "600"
+        }
+      }
+    }
+  }
+}
     });
+
+  }).catch(() => {
+    console.log("Chart load failed");
+  });
+}
+        
+    
+    function loadHeatmap() {
+  db.ref("studyTime").once("value").then(snapshot => {
+    const data = snapshot.val() || {};
+    const container = document.getElementById("heatmap");
+
+    container.innerHTML = "";
+
+    const days = 35; // last 5 weeks
+
+    for (let i = days - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+
+      const key = getLocalDateKey(d);
+      const value = data[key] || 0;
+
+      let color = "#1e293b"; // default (no study)
+
+      if (value > 0) color = "#0ea5e9";
+      if (value > 2 * 3600000) color = "#22c55e";
+      if (value > 4 * 3600000) color = "#4ade80";
+
+      const box = document.createElement("div");
+      box.style.height = "18px";
+      box.style.borderRadius = "4px";
+      box.style.background = color;
+      box.style.transition = "0.2s";
+      box.onmouseover = () => box.style.transform = "scale(1.2)";
+      box.onmouseout = () => box.style.transform = "scale(1)";
+      box.title = `${key} - ${(value / 3600000).toFixed(2)} hr`;
+
+      container.appendChild(box);
+    }
+  });
+}
+    
+
+function animateTotalTime(ms) {
+  const el = document.getElementById("todayTime");
+
+  const target = Math.floor(ms / 1000);
+  let current = 0;
+
+  const step = Math.max(1, Math.floor(target / 50));
+
+  const interval = setInterval(() => {
+    current += step;
+
+    if (current >= target) {
+      current = target;
+      clearInterval(interval);
+    }
+
+    const h = Math.floor(current / 3600);
+    const m = Math.floor((current % 3600) / 60);
+    const s = current % 60;
+
+    el.innerText = `Today: ${h} Hr ${m} Min ${s} Sec`;
+  }, 20);
+}
+    
+    function calculateStreak() {
+  db.ref("studyTime").once("value").then(snapshot => {
+    const data = snapshot.val() || {};
+
+    let streak = 0;
+
+    for (let i = 0; i < 365; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+
+      const key = getLocalDateKey(d);
+
+      if (data[key] && data[key] > 0) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+
+    animateStreak(streak);
   });
 }
 
 
-// ===============================
-// GRAPH ANIMATION ON SCROLL
-// ===============================
+   let todayStarted = false;
 
-function animateChartOnScroll() {
+function revealOnScroll() {
+  const reveals = document.querySelectorAll(".reveal");
 
-  const chart = document.querySelector(".chart-card");
+  reveals.forEach(el => {
+    const windowHeight = window.innerHeight;
+    const elementTop = el.getBoundingClientRect().top;
 
-  if (!chart || chartAnimated) return;
+    if (elementTop < windowHeight - 100) {
+      el.classList.add("active");
 
-  const top = chart.getBoundingClientRect().top;
+      // ✅ START TIMER ONLY ONCE
+      if (el.id === "todayWrapper" && !todayStarted) {
+        loadTodayTime();
+        todayStarted = true;
+      }
 
-  if (top < window.innerHeight - 100) {
+    } else {
+      el.classList.remove("active");
+    }
+  });
+}
+    
+window.addEventListener("scroll", revealOnScroll);
+window.addEventListener("load", revealOnScroll);
 
-    chartAnimated = true;
+    
+    let lastValue = 0;
 
-    getAllStudyData();
-  }
+let lastTodayValue = 0;
+
+function animateToday(ms) {
+  const el = document.getElementById("todayLive");
+
+  const target = Math.floor(ms / 1000);
+  let current = lastTodayValue;
+
+  const step = Math.max(1, Math.floor((target - current) / 10));
+
+  const interval = setInterval(() => {
+    current += step;
+
+    if (current >= target) {
+      current = target;
+      clearInterval(interval);
+    }
+
+    const h = Math.floor(current / 3600);
+    const m = Math.floor((current % 3600) / 60);
+    const s = current % 60;
+
+    el.innerText = `${h} Hr ${m} Min ${s} Sec`;
+
+  }, 50);
+
+  lastTodayValue = target;
 }
 
-window.addEventListener(
-  "scroll",
-  animateChartOnScroll
-);
+    function animateStreak(target) {
+  const el = document.getElementById("streakNumber");
 
-window.addEventListener(
-  "load",
-  animateChartOnScroll
-);
+  let current = 0;
 
+  const interval = setInterval(() => {
+    // rolling speed
+    const step = Math.max(1, Math.ceil((target - current) / 5));
 
-// ===============================
-// AVG STUDY HOURS AUTO UPDATE
-// ===============================
+    current += step;
 
-function calculateAvg() {
+    if (current >= target) {
+      current = target;
+      clearInterval(interval);
+    }
 
-  db.ref("studyTime").on("value", snap => {
+    el.innerText = current;
 
+  }, 80);
+}
+
+    function updateCountdown() {
+  const examDate = new Date("2027-01-01"); // change if needed
+  const today = new Date();
+
+  const diff = examDate - today;
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  document.getElementById("jeeDays").innerText = days;
+}
+
+updateCountdown();
+
+    function calculateAvg() {
+  db.ref("studyTime").once("value").then(snap => {
     const data = snap.val() || {};
-
     let total = 0;
     let days = 0;
 
     Object.values(data).forEach(v => {
-
       if (v > 0) {
         total += v;
         days++;
       }
     });
 
-    const avg = days
-      ? (total / days / 3600000).toFixed(2)
-      : 0;
+    const avg = days ? (total / days / 3600000).toFixed(2) : 0;
 
-    document.getElementById("avgHours").innerText =
-      avg + " hr";
+    document.getElementById("avgHours").innerText = avg + " hr";
   });
 }
 
+calculateAvg();
 
-// ===============================
-// TOTAL HOURS AUTO UPDATE
-// ===============================
 
-function calculateTotalHours() {
+    function calculatePrev() {
+  db.ref("studyTime").once("value").then(snap => {
+    const data = snap.val() || {};
 
-  db.ref("studyTime").on("value", snap => {
+    let totalDays = 0;
+    let completed = 0;
 
+    Object.values(data).forEach(v => {
+      totalDays++;
+      if (v > 0) completed++;
+    });
+
+    const percent = totalDays ? Math.round((completed / totalDays) * 100) : 0;
+
+    document.getElementById("prevDone").innerText = percent + "%";
+  });
+}
+
+calculatePrev();
+
+    function calculateTotalHours() {
+  db.ref("studyTime").once("value").then(snap => {
     const data = snap.val() || {};
 
     let total = 0;
@@ -1887,56 +1959,15 @@ function calculateTotalHours() {
       total += v;
     });
 
-    const hrs = (
-      total / 3600000
-    ).toFixed(1);
+    const hrs = (total / 3600000).toFixed(1);
 
-    document.getElementById("totalHours").innerText =
-      hrs + " hrs";
+    document.getElementById("totalHours").innerText = hrs + " hrs";
   });
 }
 
+calculateTotalHours();
 
-// ===============================
-// STREAK FIX
-// ===============================
-
-function calculateStreak() {
-
-  db.ref("studyTime").on("value", snapshot => {
-
-    const data = snapshot.val() || {};
-
-    let streak = 0;
-
-    for (let i = 0; i < 365; i++) {
-
-      const d = new Date();
-
-      d.setDate(d.getDate() - i);
-
-      const key = getLocalDateKey(d);
-
-      if (data[key] && data[key] > 0) {
-
-        streak++;
-
-      } else {
-
-        break;
-      }
-    }
-
-    document.getElementById("streakCard").innerText =
-      streak + " days";
-  });
-}
-
-
-// ===============================
-// AUTO START
-// ===============================
-
+    
   </script>
 </body>
 </html>
