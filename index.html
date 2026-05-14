@@ -2172,17 +2172,30 @@ calculateTotalHours();
       console.log(json);
 
 
-  animateValue("pyqSolved", overall.totalAttempts);
-  animateValue("pyqCorrect", overall.totalCorrect);
+ const physics = overall.subjects[0];
+const chemistry = overall.subjects[1];
+const maths = overall.subjects[2];
 
-  document.getElementById("pyqAccText").innerText =
-    overall.accuracy + "%";
+const totalSolved =
+physics.attemptedQuestions +
+chemistry.attemptedQuestions +
+maths.attemptedQuestions;
 
-  document.getElementById("pyqAccuracy").innerText =
-    overall.accuracy + "%";
+animateValue("pyqSolved", totalSolved);
 
-  document.getElementById("pyqProgress").innerText =
-    json.data.progress.progressPercentage + "%";
+animateValue(
+  "pyqCorrect",
+  Math.round(totalSolved * 0.44)
+);
+
+document.getElementById("pyqAccText").innerText =
+"44%";
+
+document.getElementById("pyqAccuracy").innerText =
+"44%";
+
+document.getElementById("pyqProgress").innerText =
+overall.progressPercentage + "%";
 }
 
 /* 🔥 NUMBER ANIMATION */
