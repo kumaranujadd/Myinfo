@@ -2180,16 +2180,21 @@ const maths = overall.subjects[2];
       
 
 const totalSolved =
-physics.attemptedQuestions +
-chemistry.attemptedQuestions +
-maths.attemptedQuestions;
+physics.progress.attemptedQs +
+chemistry.progress.attemptedQs +
+maths.progress.attemptedQs;
 
 animateValue("pyqSolved", totalSolved);
 
-animateValue(
-  "pyqCorrect",
-  Math.round(totalSolved * 0.44)
+const totalCorrect =
+Math.round(
+  (physics.progress.attemptedQs * physics.progress.accuracy / 100) +
+  (chemistry.progress.attemptedQs * chemistry.progress.accuracy / 100) +
+  (maths.progress.attemptedQs * maths.progress.accuracy / 100)
 );
+
+animateValue("pyqCorrect", totalCorrect);
+      
 
 document.getElementById("pyqAccText").innerText =
 "44%";
