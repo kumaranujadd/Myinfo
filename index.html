@@ -1012,6 +1012,141 @@ body {
   width: 100%;
 }
 
+
+    /* 🔥 PYQ CARD */
+
+.pyq-card{
+  margin-top:40px;
+  padding:45px;
+  border-radius:30px;
+
+  background:linear-gradient(135deg,#fff7ed,#ffffff);
+
+  border:1.5px solid #fde68a;
+
+  box-shadow:0 20px 60px rgba(0,0,0,0.05);
+
+  width:100%;
+  max-width:1100px;
+}
+
+.pyq-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  flex-wrap:wrap;
+}
+
+.pyq-small{
+  color:#ef4444;
+  font-size:13px;
+  letter-spacing:1px;
+  font-weight:700;
+}
+
+.pyq-title{
+  font-size:clamp(45px,6vw,80px);
+  margin:10px 0;
+  font-weight:900;
+  letter-spacing:-2px;
+  color:#0f172a;
+}
+
+.pyq-title span{
+  background:linear-gradient(90deg,#ef4444,#f97316);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.pyq-desc{
+  color:#64748b;
+  font-size:18px;
+}
+
+.pyq-circle{
+  width:160px;
+  height:160px;
+  border-radius:50%;
+
+  background:conic-gradient(
+    #f97316 0deg,
+    #ef4444 220deg,
+    #e2e8f0 220deg
+  );
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  animation:rotateGlow 4s linear infinite;
+}
+
+.pyq-circle span{
+  width:125px;
+  height:125px;
+  border-radius:50%;
+
+  background:white;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  font-size:32px;
+  font-weight:900;
+  color:#0f172a;
+}
+
+@keyframes rotateGlow{
+  from{
+    transform:rotate(0deg);
+  }
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+.pyq-grid{
+  margin-top:35px;
+
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:18px;
+}
+
+.pyq-box{
+  padding:24px;
+  border-radius:22px;
+
+  background:white;
+
+  border:1px solid #f1f5f9;
+
+  box-shadow:0 10px 25px rgba(0,0,0,0.04);
+
+  transition:.3s;
+}
+
+.pyq-box:hover{
+  transform:translateY(-6px);
+}
+
+.pyq-box p{
+  color:#64748b;
+  margin:0;
+  font-size:14px;
+}
+
+.pyq-box h2{
+  margin-top:8px;
+  font-size:38px;
+  font-weight:900;
+
+  background:linear-gradient(90deg,#ef4444,#f97316);
+  -webkit-background-clip:text;
+  color:transparent;
+}
     
   </style>
 </head>
@@ -1061,11 +1196,64 @@ body {
   <div class="live-badge">
     ● LIVE TRACKING
   </div>
-
+     
   <h2 class="today-heading">
   <span class="today-label">Today:</span>
   <span id="todayLive">0 Hr 0 Min 0 Sec</span>
 </h2>
+
+</div>
+
+   <!-- 🔥 PYQ LIVE CARD -->
+<div class="pyq-card reveal">
+
+  <div class="live-badge">
+    ● LIVE TRACKING
+  </div>
+
+  <div class="pyq-top">
+
+    <div>
+      <p class="pyq-small">Today's Performance</p>
+
+      <h1 class="pyq-title">
+        PYQ <span>Analytics</span>
+      </h1>
+
+      <p class="pyq-desc">
+        Real-time question solving performance from MARKS API.
+      </p>
+    </div>
+
+    <div class="pyq-circle">
+      <span id="pyqAccuracy">0%</span>
+    </div>
+
+  </div>
+
+  <div class="pyq-grid">
+
+    <div class="pyq-box">
+      <p>Total Solved</p>
+      <h2 id="pyqSolved">0</h2>
+    </div>
+
+    <div class="pyq-box">
+      <p>Correct</p>
+      <h2 id="pyqCorrect">0</h2>
+    </div>
+
+    <div class="pyq-box">
+      <p>Accuracy</p>
+      <h2 id="pyqAccText">0%</h2>
+    </div>
+
+    <div class="pyq-box">
+      <p>Progress</p>
+      <h2 id="pyqProgress">0%</h2>
+    </div>
+
+  </div>
 
 </div>
 
@@ -1967,6 +2155,62 @@ calculatePrev();
 
 calculateTotalHours();
 
+
+    async function loadPYQData(){
+
+  const url = "https://web.getmarks.app/api/v4/cpyqb/exam/615f0e999476412f48314daf/subject/615f0c729476412f48314dab/chapter/6160239d176977e9a4bf6528/progress?pyqFilter=all&platform=web";
+
+  const token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3YWJjMmY1OThmMzk1MWNlZjI0OTIyZSIsImlhdCI6MTc3ODc1OTI1MywiZXhwIjoxNzgxMzUxMjUzfQ.COlPZ6NKX4VaAl1mpQQ8OKWvTIobJpRCFTYU2XquT2E";
+
+  const res = await fetch(url,{
+    headers:{
+      "authorization": "Bearer " + token
+    }
+  });
+
+  const json = await res.json();
+
+  const overall = json.data.progress.overall;
+
+  animateValue("pyqSolved", overall.totalAttempts);
+  animateValue("pyqCorrect", overall.totalCorrect);
+
+  document.getElementById("pyqAccText").innerText =
+    overall.accuracy + "%";
+
+  document.getElementById("pyqAccuracy").innerText =
+    overall.accuracy + "%";
+
+  document.getElementById("pyqProgress").innerText =
+    json.data.progress.progressPercentage + "%";
+}
+
+/* 🔥 NUMBER ANIMATION */
+
+function animateValue(id,target){
+
+  let current = 0;
+
+  const el = document.getElementById(id);
+
+  const step = Math.ceil(target/30);
+
+  const interval = setInterval(()=>{
+
+    current += step;
+
+    if(current >= target){
+      current = target;
+      clearInterval(interval);
+    }
+
+    el.innerText = current;
+
+  },40);
+}
+
+loadPYQData();
+  
     
   </script>
 </body>
