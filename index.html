@@ -1986,26 +1986,29 @@ function animateTotalTime(ms) {
     
     function calculateStreak() {
   db.ref("studyTime").once("value").then(snapshot => {
-    const data = snapshot.val() || {};
 
+    const data = snapshot.val() || {};
     let streak = 0;
 
     for (let i = 0; i < 365; i++) {
+
       const d = new Date();
       d.setDate(d.getDate() - i);
 
       const key = getLocalDateKey(d);
 
       if (data[key] && data[key] > 0) {
-  streak++;
-} else {
-  break;
-}
+        streak++;
+      } else {
+        break;
+      }
+    }
 
-document.getElementById("streakCard").innerText =
-  streak + " days";
+    document.getElementById("streakCard").innerText =
+      streak + " days";
 
-animateStreak(streak);
+    animateStreak(streak);
+
   });
 }
 
@@ -2072,8 +2075,7 @@ function animateToday(ms) {
 }
 
     function animateStreak(target) {
-  const el = document.getElementById("streakNumber");
-
+  const el = document.getElementById("streakCard");
   let current = 0;
 
   const interval = setInterval(() => {
