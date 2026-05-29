@@ -1334,7 +1334,7 @@ body {
 
       <div>
         <h4>BEST DAY</h4>
-        <p>6.8 hrs</p>
+        <p id="bestDay">0 hrs</p>
       </div>
     </div>
 
@@ -1997,17 +1997,21 @@ function animateTotalTime(ms) {
       const key = getLocalDateKey(d);
 
       if (data[key] && data[key] > 0) {
-        streak++;
-      } else {
-        break;
-      }
-    }
+  streak++;
+} else {
+  break;
+}
 
-    animateStreak(streak);
+document.getElementById("streakCard").innerText =
+  streak + " days";
+
+animateStreak(streak);
   });
 }
 
+calculateStreak();
 
+    
    let todayStarted = false;
 
 function revealOnScroll() {
@@ -2242,6 +2246,21 @@ function animateValue(id,target){
 
 loadPYQData();
   
+    function calculateBestDay() {
+  db.ref("studyTime").on("value", snap => {
+    const data = snap.val() || {};
+
+    let best = 0;
+
+    Object.values(data).forEach(v => {
+      if (v > best) best = v;
+    });
+
+    document.getElementById("bestDay").innerText =
+      (best / 3600000).toFixed(1) + " hrs";
+  });
+}
+calculateBestDay();
     
   </script>
 </body>
