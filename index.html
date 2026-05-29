@@ -1867,19 +1867,33 @@ function loadTodayTime() {
           borderColor: "#f97316",
           borderWidth: 2.5,
           tension: 0.45,
-          pointRadius: 3
+          pointRadius: 5,
+          pointHoverRadius: 8,
+          pointHitRadius: 20
         }]
       },
       options: {
   responsive: true,
   maintainAspectRatio: false,
 
-  plugins: {
-    legend: {
-      display: false
-    }
+ plugins: {
+  legend: {
+    display: false
   },
 
+  tooltip: {
+    callbacks: {
+      title: function(context) {
+        return "Date: " + context[0].label;
+      },
+      label: function(context) {
+        return "Study Time: " + context.parsed.y + " hrs";
+      }
+    }
+  }
+},
+
+        
   scales: {
 
     x: {
