@@ -1842,7 +1842,14 @@ function loadTodayTime() {
     const values = [];
 
     Object.keys(data).sort().slice(-7).forEach(date => {
-      labels.push(date);
+      const d = new Date(date);
+
+labels.push(
+  d.toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short"
+  })
+);
       values.push((data[date] / 3600000).toFixed(1));
     });
 
@@ -1882,13 +1889,29 @@ function loadTodayTime() {
   },
 
   tooltip: {
-    callbacks: {
-      title: function(context) {
-        return "Date: " + context[0].label;
-      },
-      label: function(context) {
-        return "Study Time: " + context.parsed.y + " hrs";
-      }
+  enabled: true,
+
+  backgroundColor: "#0f172a",
+
+  titleFont: {
+    size: 14
+  },
+
+  bodyFont: {
+    size: 14
+  },
+
+  padding: 12,
+
+  displayColors: true,
+
+  callbacks: {
+    title: function(context) {
+      return "Date: " + context[0].label;
+    },
+
+    label: function(context) {
+      return "Study Time: " + context.parsed.y + " hrs";
     }
   }
 },
