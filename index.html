@@ -2101,21 +2101,26 @@ function animateToday(ms) {
 updateCountdown();
 
     function calculateAvg() {
-  db.ref("studyTime").once("value").then(snap => {
-    const data = snap.val() || {};
-    let total = 0;
-    let days = 0;
+  db.ref("studyTime").on("value", snap => {
 
-    Object.values(data).forEach(v => {
-      if (v > 0) {
-        total += v;
-        days++;
-      }
+    const data = snap.val() || {};
+
+    const last7 = Object.keys(data)
+      .sort()
+      .slice(-7);
+
+    let total = 0;
+
+    last7.forEach(date => {
+      total += data[date] || 0;
     });
 
-    const avg = days ? (total / days / 3600000).toFixed(2) : 0;
+    const avg = last7.length
+      ? (total / last7.length / 3600000).toFixed(2)
+      : "0.00";
 
-    document.getElementById("avgHours").innerText = avg + " hr";
+    document.getElementById("avgHours").innerText =
+      avg + " hr";
   });
 }
 
