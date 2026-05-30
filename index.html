@@ -511,9 +511,7 @@ body {
     /* 🔥 BIHAR STYLE TODAY CARD */
 .today-card {
   margin-top: 50px;
-
   padding: 60px 40px;
-
   border-radius: 30px;
 
   /* soft gradient like Bihar */
@@ -524,8 +522,8 @@ body {
 
   box-shadow: 0 20px 60px rgba(0,0,0,0.05);
 
-  max-width: 1100px;
-  width: 100%;
+  width: min(1100px, 100%);
+  padding: clamp(25px, 4vw, 60px);
 }
 
 /* LIVE BADGE */
@@ -540,44 +538,48 @@ body {
   padding: 6px 14px;
   border-radius: 20px;
 
-  display: inline-block;
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: fit-content;
+  margin: 0 auto 25px auto;
 }
 
 /* BIG HEADING */
-.today-heading {
-  font-size: clamp(40px, 6vw, 80px);
-  font-weight: 900;
-  letter-spacing: -2px;
+..today-heading{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+
+  text-align:center;
+
+  font-size:clamp(28px,5vw,80px);
+  font-weight:900;
+  line-height:1.2;
 }
 
-/* Today label */
-.today-label {
-  color: #1e293b;
-}
+#todayLive{
+  display:inline-block;
 
-
- #todayLive {
-  display: inline-block;
-
-  background: linear-gradient(
+  background:linear-gradient(
     90deg,
     #ef4444,
     #f97316,
     #ef4444
   );
 
-  background-size: 200% 100%;
+  background-size:200% 100%;
 
-  -webkit-background-clip: text;
-  background-clip: text;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+  white-space:normal;      /* changed */
+  word-break:break-word;   /* added */
 
-  animation: shine 4s linear infinite;
-
-  white-space: nowrap;
+  animation:shine 4s linear infinite;
 }
 
     .streak-text {
