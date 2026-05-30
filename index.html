@@ -550,16 +550,21 @@ body {
 /* BIG HEADING */
 .today-heading{
   display:flex;
-  flex-wrap:wrap;
   justify-content:center;
   align-items:center;
-  gap:12px;
+  flex-wrap:wrap;
 
+  width:100%;
   text-align:center;
 
-  font-size:clamp(28px,5vw,80px);
+  font-size:clamp(40px,8vw,120px);
   font-weight:900;
-  line-height:1.2;
+  line-height:1.1;
+}
+
+.today-label{
+  color:#64748b;
+  margin-right:12px;
 }
 
 #todayLive{
@@ -573,16 +578,17 @@ body {
   );
 
   background-size:200% 100%;
-
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
 
-  white-space:normal;      /* changed */
-  word-break:break-word;   /* added */
+  font-size:12vw;
+
+  white-space:nowrap;
 
   animation:shine 4s linear infinite;
 }
 
+    
     .streak-text {
   font-family: 'Playfair Display', serif;
   font-size: 32px;
