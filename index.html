@@ -172,8 +172,8 @@ body {
   padding-top: 120px;
 
   /* 🔥 REDUCE SIDE SPACE */
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: clamp(10px, 2vw, 30px);
+  padding-right: clamp(10px, 2vw, 30px);
 
   box-sizing: border-box;
 }
@@ -509,23 +509,24 @@ body {
 
 
     /* 🔥 BIHAR STYLE TODAY CARD */
-.today-card {
+.today-card{
   margin-top: 50px;
-  padding: 60px 40px;
+
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: clamp(20px, 4vw, 60px);
+
   border-radius: 30px;
 
-  /* soft gradient like Bihar */
   background: linear-gradient(120deg, #f8fafc, #eef2ff);
 
-  /* SINGLE OUTLINE (like navbar) */
   border: 1.5px solid #fde68a;
 
   box-shadow: 0 20px 60px rgba(0,0,0,0.05);
-
-  width: min(1100px, 100%);
-  padding: clamp(25px, 4vw, 60px);
 }
 
+    
 /* LIVE BADGE */
 .today-card .live-badge {
   font-size: 12px;
